@@ -1,12 +1,12 @@
 [general]
-base_currency = USD
+base_currency = EUR
 display = price
 
 [bitcoin]
 icon = BTC
 
-[ethereum]
-icon = ETH
-
 [plasma]
 icon = XPL
+
+[ethereum]
+icon = ETH
