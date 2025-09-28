@@ -46,6 +46,7 @@ exec --no-startup-id nm-applet
 bindsym XF86AudioRaiseVolume exec "amixer -q sset Master,0 1310+ unmute"
 bindsym XF86AudioLowerVolume exec "amixer -q sset Master,0 1310- unmute"
 bindsym XF86AudioMute exec "amixer -q sset Master,0 toggle"
+bindsym XF86AudioPlay exec playerctl play-pause
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
