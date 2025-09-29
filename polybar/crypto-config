@@ -1,5 +1,5 @@
 [general]
-base_currency = EUR
+base_currency = USD 
 display = price
 
 [bitcoin]
