@@ -1,1 +1,9 @@
+configuration {
+  display-drun: "Start";
+  drun-display-format: "{icon} {name}";
+  font: "JetBrainsMono Nerd Font Regular 12";
+  modi: "filebrowser,drun,keys,ssh";
+  show-icons: true;
+}
+
 @theme "/usr/share/rofi/themes/Monokai.rasi"
