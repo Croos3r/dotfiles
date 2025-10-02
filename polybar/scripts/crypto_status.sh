@@ -1,3 +1,3 @@
 #!/bin/bash
 
-~/.config/polybar/scripts/crypto.py 2> /dev/null
+`dirname $0`/crypto.py 2> /dev/null
