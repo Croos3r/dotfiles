@@ -13,3 +13,9 @@ icon = ETH
 
 [aleph-im]
 icon = ALEPH
+
+[solana]
+icon = SOL
+
+[bnb]
+icon = BNB
