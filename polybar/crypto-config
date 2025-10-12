@@ -11,11 +11,11 @@ icon = XPL
 [ethereum]
 icon = ETH
 
-[aleph-im]
-icon = ALEPH
-
 [solana]
 icon = SOL
 
-[bnb]
+[binancecoin]
 icon = BNB
+
+[aleph-im]
+icon = ALEPH
