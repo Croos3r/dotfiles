@@ -1,19 +1,19 @@
 [global_config]
+  suppress_multiple_term_dialog = True
 [keybindings]
 [profiles]
   [[default]]
     icon_bell = False
+    background_color = "#1e1e2e"
     background_darkness = 0.75
     background_type = transparent
+    background_image = None
     font = JetBrainsMono Nerd Font Mono 16
+    foreground_color = "#cdd6f4"
     show_titlebar = False
     scrollbar_position = hidden
-    use_system_font = False
-    cursor_color = "#f5e0dc"
-    background_color = "#1e1e2e"
-    foreground_color = "#cdd6f4"
     palette = "#45475a:#f38ba8:#a6e3a1:#f9e2af:#89b4fa:#f5c2e7:#94e2d5:#bac2de:#585b70:#f38ba8:#a6e3a1:#f9e2af:#89b4fa:#f5c2e7:#94e2d5:#a6adc8"
-    background_image = None
+    use_system_font = False
 [layouts]
   [[default]]
     [[[window0]]]
