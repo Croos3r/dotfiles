@@ -21,6 +21,7 @@ font pango:Jetbrains Mono Medium 8
 
 exec_always --no-startup-id picom -b --config $HOME/.config/picom/picom.conf
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+exec_always --no-startup-id autotiling
 exec --no-startup-id feh --bg-scale $HOME/Pictures/hardstyle-defqon-1-qdance.jpg
 
 # Start XDG autostart .desktop files using dex. See also
