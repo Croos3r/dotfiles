@@ -23,7 +23,8 @@ exec_always --no-startup-id picom -b --config $HOME/.config/picom/picom.conf
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id autotiling
 exec --no-startup-id feh --bg-scale $HOME/Pictures/hardstyle-defqon-1-qdance.jpg
-exec --no-startup-id /usr/libexec/gsd-xsettings
+exec_always --no-startup-id /usr/libexec/gsd-xsettings
+exec_always xrandr --auto --output eDP-1 --left-of HDMI-1
 
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
@@ -134,6 +135,17 @@ set $ws7 "7"
 set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
+
+workspace $ws1 output primary
+workspace $ws2 output primary
+workspace $ws3 output nonprimary
+workspace $ws4 output nonprimary
+
+assign [class="^Brave-browser$"] number $ws1
+assign [class="^discord$"] number $ws2
+assign [class="^jetbrains-.+$"] number $ws3
+assign [class="^X-terminal-emulator$"] number $ws4
+assign [class="^Spotify$"] number $ws5
 
 # switch to workspace
 bindsym $mod+ampersand workspace number $ws1
