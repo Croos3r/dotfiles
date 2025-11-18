@@ -147,6 +147,8 @@ assign [class="^jetbrains-.+$"] number $ws3
 assign [class="^X-terminal-emulator$"] number $ws4
 assign [class="^Spotify$"] number $ws5
 
+for_window [class="^gnome-calculator$"] floating enable, resize set 360 528, move position 1540 20
+
 # switch to workspace
 bindsym $mod+ampersand workspace number $ws1
 bindsym $mod+eacute workspace number $ws2
