@@ -22,7 +22,7 @@ font pango:Jetbrains Mono Medium 8
 exec_always --no-startup-id picom -b --config $HOME/.config/picom/picom.conf
 exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 exec_always --no-startup-id autotiling
-exec --no-startup-id feh --bg-scale $HOME/Pictures/hardstyle-defqon-1-qdance.jpg
+exec_always --no-startup-id feh --bg-scale $HOME/Pictures/hardstyle-defqon-1-qdance.jpg $HOME/Pictures/PNG/fond_ecran.jpg
 exec_always --no-startup-id /usr/libexec/gsd-xsettings
 exec_always xrandr --auto --output eDP-1 --left-of HDMI-1
 
@@ -52,6 +52,8 @@ bindsym XF86AudioRaiseVolume exec "amixer -q sset Master,0 1310+ unmute"
 bindsym XF86AudioLowerVolume exec "amixer -q sset Master,0 1310- unmute"
 bindsym XF86AudioMute exec "amixer -q sset Master,0 toggle"
 bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl s +5% 
+bindsym XF86MonBrightnessDown exec --no-startup-id  brightnessctl s 5%-
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -146,8 +148,11 @@ assign [class="^discord$"] number $ws2
 assign [class="^jetbrains-.+$"] number $ws3
 assign [class="^X-terminal-emulator$"] number $ws4
 assign [class="^Spotify$"] number $ws5
+assign [class="^Spotify$"] number $ws5
+assign [class="^Mixx$"] number $ws3
 
 for_window [class="^gnome-calculator$"] floating enable, resize set 360 528, move position 1540 20
+for_window [class="^Matplotlib$"] floating enable, resize set 1200 800, move position 720 120
 
 # switch to workspace
 bindsym $mod+ampersand workspace number $ws1
