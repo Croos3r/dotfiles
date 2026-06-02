@@ -28,7 +28,13 @@ local function neoconf_before_init(name)
     if not ok then
       return
     end
+    -- Resolve the workspace root, preferring the most reliable source.
+    -- rootPath is deprecated; rootUri and workspaceFolders are what modern
+    -- clients populate, so check all three.
     local root = params.rootPath
+    if params.rootUri then
+      root = vim.uri_to_fname(params.rootUri)
+    end
     if params.workspaceFolders and params.workspaceFolders[1] then
       root = vim.uri_to_fname(params.workspaceFolders[1].uri)
     end

@@ -7,7 +7,12 @@ local function pick_project_dir()
   local actions = require("telescope.actions")
   local action_state = require("telescope.actions.state")
 
-  local fd = vim.fn.executable("fd") == 1 and "fd" or "fdfind"
+  local fd = (vim.fn.executable("fd") == 1 and "fd")
+    or (vim.fn.executable("fdfind") == 1 and "fdfind")
+  if not fd then
+    vim.notify("Projects picker needs `fd` (or `fdfind`) installed", vim.log.levels.ERROR)
+    return
+  end
   local root = vim.fn.expand("~/Projects")
 
   pickers
