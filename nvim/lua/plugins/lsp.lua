@@ -52,8 +52,8 @@ return {
           end
           map("K", vim.lsp.buf.hover, "Hover docs")
           map("<c-k>", vim.diagnostic.open_float, "Show diagnostic")
-          map("gD", vim.lsp.buf.definition, "Go to definition")
-          map("gd", vim.lsp.buf.declaration, "Go to declaration")
+          map("gD", vim.lsp.buf.declaration, "Go to declaration")
+          map("gd", vim.lsp.buf.definition, "Go to definition")
           map("gI", vim.lsp.buf.implementation, "Go to implementation")
           map("gr", vim.lsp.buf.references, "References")
           map("gtd", vim.lsp.buf.type_definition, "Type definition")
