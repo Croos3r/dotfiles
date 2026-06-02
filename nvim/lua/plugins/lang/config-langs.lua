@@ -17,7 +17,7 @@ return {
 
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = { ensure_installed = { "json", "jsonc", "yaml", "dockerfile" } },
+    opts = { ensure_installed = { "json", "yaml", "dockerfile" } },
   },
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
