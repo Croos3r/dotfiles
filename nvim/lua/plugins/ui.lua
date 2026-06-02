@@ -20,8 +20,7 @@ return {
     },
     keys = {
       { "<leader>gi", function() Snacks.picker.gh_issue() end, desc = "GitHub issues" },
-      { "gi", function() Snacks.picker.gh_issue() end, desc = "GitHub issues" },
-      { "gp", function() Snacks.picker.gh_pr() end, desc = "GitHub PRs" },
+      { "<leader>gp", function() Snacks.picker.gh_pr() end, desc = "GitHub PRs" },
     },
   },
 
