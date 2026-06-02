@@ -15,44 +15,14 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Make sure to setup `mapleader` and `maplocalleader` before
--- loading lazy.nvim so that mappings are correct.
--- This is also a good place to setup other settings (vim.opt)
-vim.g.mapleader = " "
-vim.g.maplocalleader = "\\"
-
-vim.wo.relativenumber = true
-vim.wo.number = true
-vim.wo.wrap = true
-vim.opt.expandtab = false
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.softtabstop = 0
-
--- Setup lazy.nvim
 require("lazy").setup({
   spec = {
-    -- import your plugins
+    -- General plugins live in lua/plugins/, language toolchains in lua/plugins/lang/.
     { import = "plugins" },
+    { import = "plugins.lang" },
   },
-  -- Configure any other settings here. See the documentation for more details.
-  -- automatically check for plugin updates
+  -- Check for plugin updates in the background without notifications.
   checker = { enabled = true, notify = false },
-})
-
-vim.diagnostic.config({ virtual_text = false, virtual_lines = false, float = true })
-
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    if vim.fn.argv(0) == "" then
-      require("telescope.builtin").find_files()
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd("BufWrite", {
-  pattern = "*.rs",
-  callback = function()
-    vim.cmd("silent MaudFormat")
-  end,
+  -- Avoid noisy "did you mean to lazy-load?" warnings for our small specs.
+  change_detection = { notify = false },
 })
