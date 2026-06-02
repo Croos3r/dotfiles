@@ -17,13 +17,14 @@ return {
     end,
   },
 
-  -- Per-project LSP settings via .neoconf.json. Must be set up before any
-  -- lspconfig server (its hook patches lspconfig's setup pipeline).
+  -- Per-project LSP settings via .neoconf.json. We read these through neoconf's
+  -- public API in core.lsp's before_init (neoconf only auto-hooks the deprecated
+  -- lspconfig framework, which we don't use).
   { "folke/neoconf.nvim", cmd = "Neoconf", opts = {} },
 
   -- LSP configs. Servers are contributed by language modules through
-  -- `opts.servers` and configured via core.lsp (which routes through
-  -- lspconfig.setup so neoconf can inject project settings).
+  -- `opts.servers` and configured via core.lsp, which uses the native
+  -- vim.lsp.config/enable API and merges neoconf project settings itself.
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
@@ -36,7 +37,7 @@ return {
       servers = {}, -- e.g. servers.basedpyright = { settings = {...} }
     },
     config = function(_, opts)
-      -- neoconf first, before any server is configured.
+      -- Initialize neoconf so its API is ready for core.lsp's before_init.
       require("neoconf").setup({})
 
       -- Diagnostics: no inline virtual text; show details in a float instead.

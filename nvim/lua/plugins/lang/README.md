@@ -18,8 +18,9 @@ Adding a new language = create one file here. Nothing else to touch.
 | Anything else        | a normal lazy spec (e.g. `rustaceanvim`, `go.nvim`) | — |
 
 Notes:
-- Servers in `opts.servers` are configured via `core.lsp` → `lspconfig.setup`, which
-  is what lets **neoconf** inject per-project settings. Don't use `vim.lsp.enable`.
+- Servers in `opts.servers` are configured by `core.lsp`, which uses the native
+  `vim.lsp.config`/`vim.lsp.enable` API and merges **neoconf** per-project settings
+  itself. Just add to `opts.servers` — don't call `vim.lsp.config`/`enable` yourself.
 - Formatter *arguments* (e.g. indent width) are customized once in
   `lua/plugins/formatting.lua` under `formatters = {}`; modules only map filetypes.
 - Some servers manage themselves (e.g. `rustaceanvim` owns rust-analyzer). Those are
