@@ -1,6 +1,10 @@
--- Picker that lists directories under ~/Projects and sets them as the cwd.
--- Useful for switching project regardless of where nvim was launched.
-local function pick_project_dir()
+-- Picker that lists directories under `root` and sets the selected one as cwd.
+-- Used for both the ~/Projects switcher and the monorepo workspace switcher.
+local function pick_dir_as_cwd(opts)
+  opts = opts or {}
+  local root = opts.root
+  local prompt_title = opts.prompt_title or "Directories (set cwd)"
+
   local pickers = require("telescope.pickers")
   local finders = require("telescope.finders")
   local conf = require("telescope.config").values
@@ -10,14 +14,13 @@ local function pick_project_dir()
   local fd = (vim.fn.executable("fd") == 1 and "fd")
     or (vim.fn.executable("fdfind") == 1 and "fdfind")
   if not fd then
-    vim.notify("Projects picker needs `fd` (or `fdfind`) installed", vim.log.levels.ERROR)
+    vim.notify("Directory picker needs `fd` (or `fdfind`) installed", vim.log.levels.ERROR)
     return
   end
-  local root = vim.fn.expand("~/Projects")
 
   pickers
     .new({}, {
-      prompt_title = "Projects (set cwd)",
+      prompt_title = prompt_title,
       -- Depth 2 shows top-level projects and one level of subprojects
       -- (e.g. monorepo backends). fd honors .gitignore, so build dirs are skipped.
       finder = finders.new_oneshot_job({ fd, "--type", "d", "--max-depth", "2", ".", root }, {
@@ -78,6 +81,24 @@ return {
       desc = "Find files (global, $HOME)",
     },
     -- Change the cwd to a project directory under ~/Projects.
-    { "<leader>fp", pick_project_dir, desc = "Set cwd to a ~/Projects dir" },
+    {
+      "<leader>fp",
+      function()
+        pick_dir_as_cwd({ root = vim.fn.expand("~/Projects"), prompt_title = "Projects (set cwd)" })
+      end,
+      desc = "Set cwd to a ~/Projects dir",
+    },
+    -- Hop between workspaces within the current dir (monorepo subdir switcher).
+    {
+      "<leader>fw",
+      function()
+        local root = vim.fn.getcwd()
+        pick_dir_as_cwd({
+          root = root,
+          prompt_title = "Workspaces in " .. vim.fn.fnamemodify(root, ":~") .. " (set cwd)",
+        })
+      end,
+      desc = "Set cwd to a workspace under current dir",
+    },
   },
 }

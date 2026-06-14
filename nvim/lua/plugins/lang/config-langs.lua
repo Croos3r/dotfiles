@@ -38,9 +38,9 @@ return {
       formatters_by_ft = {
         sh = { "shfmt" },
         bash = { "shfmt" },
-        json = { "prettierd", "prettier", stop_after_first = true },
-        jsonc = { "prettierd", "prettier", stop_after_first = true },
-        yaml = { "prettierd", "prettier", stop_after_first = true },
+        json = { "prettier" },
+        jsonc = { "prettier" },
+        yaml = { "prettier" },
       },
     },
   },

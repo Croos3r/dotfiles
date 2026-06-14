@@ -1,22 +1,12 @@
 # Leptos / maud / RSX, per project
 
 The base config is plain Rust (rustaceanvim + rustfmt). Leptos-specific tooling
-was removed from the global config so it doesn't run in every Rust project.
-Re-enable it **per project** with the two mechanisms below.
-
-There's an important split:
-
-- **neoconf** handles per-project *LSP settings* (JSON merged into the language
-  server). Good for the `rust-analyzer` proc-macro tweaks.
-- **neoconf does NOT load plugins.** For project-local formatters
-  (`leptosfmt`, `maud-fmt`) use a project `.nvim.lua` (`exrc`).
-
----
+is enabled **per project** with neoconf — everything lives in one `.neoconf.json`
+at the project root. No `exrc`, no trusted Lua, no global state.
 
 ## 1. rust-analyzer settings → `.neoconf.json`
 
-Drop a `.neoconf.json` at the project root. rustaceanvim auto-detects neoconf and
-merges these into rust-analyzer:
+rustaceanvim auto-detects neoconf and merges `lspconfig.rust_analyzer` settings:
 
 ```jsonc
 {
@@ -24,9 +14,7 @@ merges these into rust-analyzer:
     "rust_analyzer": {
       "rust-analyzer": {
         "procMacro": {
-          "ignored": {
-            "leptos_macro": ["component", "server"]
-          }
+          "ignored": { "leptos_macro": ["component", "server"] }
         }
       }
     }
@@ -34,38 +22,56 @@ merges these into rust-analyzer:
 }
 ```
 
-This is the old `procMacro.ignore` for `leptos_macro` that used to live in the
-global config — now scoped to the projects that actually need it.
+## 2. leptosfmt formatting → neoconf-driven conform
 
-> Verify it applied: open a Rust file in the project and run `:Neoconf` (shows the
-> merged settings) or `:checkhealth neoconf`.
+neoconf has no built-in conform support, but conform allows a *function* for a
+filetype's formatter list, so we let it read neoconf.
 
-## 2. leptosfmt / maud formatting → project `.nvim.lua`
-
-Enable `exrc` once globally so Neovim trusts project-local config:
+**One-time wiring** (in `lua/plugins/lang/rust.lua`, conform spec) — make the
+Rust formatter neoconf-aware:
 
 ```lua
--- in lua/core/options.lua (already a good place)
-vim.opt.exrc = true
+{
+  "stevearc/conform.nvim",
+  opts = {
+    formatters_by_ft = {
+      rust = function(bufnr)
+        local ok, neoconf = pcall(require, "neoconf")
+        local fmts = ok and neoconf.get("conform.formatters_by_ft.rust", nil,
+          { file = vim.api.nvim_buf_get_name(bufnr) })
+        return fmts or { "rustfmt" }
+      end,
+    },
+  },
+},
 ```
 
-Then in the **project root**, add `.nvim.lua`:
+and register leptosfmt once (in `lua/plugins/formatting.lua`, `formatters`):
 
 ```lua
--- Project-local: format Rust with leptosfmt instead of plain rustfmt.
-require("conform").formatters_by_ft.rust = { "leptosfmt" }
-require("conform").formatters.leptosfmt = { prepend_args = { "--rustfmt" } }
+leptosfmt = { prepend_args = { "--rustfmt" } },
 ```
 
-Install the binary in that project: `cargo install leptosfmt`.
+**Per project** — add to that project's `.neoconf.json` (alongside section 1):
 
-The first time you open the project Neovim asks whether to trust `.nvim.lua`
-(`:trust`). Commit `.nvim.lua` to the project repo, not to this dotfiles repo.
+```jsonc
+{
+  "conform": { "formatters_by_ft": { "rust": ["leptosfmt"] } }
+}
+```
 
-### maud-fmt
+Install the binary in the project: `cargo install leptosfmt`.
 
-If you want `maud-fmt.nvim` (RSX/maud macro formatting), install it as a normal
-plugin **inside that project's own Neovim overlay** — it isn't worth a global
-plugin. Simplest: add it back as a `ft = "rust"` plugin guarded by a project marker,
-e.g. only set it up when a `leptos.toml`/`Cargo.toml` with leptos is present. For
-most workflows the `.nvim.lua` + leptosfmt path above is enough.
+Projects without that key keep `rustfmt`. neoconf's JSON schema may show a
+cosmetic "unknown property" hint on the custom `conform` key — harmless, the
+value is still read.
+
+> The wiring above is optional in the base config; add it only if you actually
+> work on Leptos projects. Until then, `lang/rust.lua` keeps the simple
+> `rust = { "rustfmt" }` mapping.
+
+## maud-fmt
+
+For `maud-fmt.nvim` (RSX/maud macro formatting), add it as a `ft = "rust"`
+plugin gated behind a project marker (e.g. only when a leptos dependency is
+present). For most workflows the leptosfmt path above is enough.

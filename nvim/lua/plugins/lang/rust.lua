@@ -4,7 +4,7 @@ return {
   -- lspconfig). It auto-detects neoconf for per-project settings.
   {
     "mrcjkb/rustaceanvim",
-    version = "^6",
+    version = "^9",
     lazy = false, -- the plugin lazy-loads itself on rust files
     init = function()
       vim.g.rustaceanvim = {
