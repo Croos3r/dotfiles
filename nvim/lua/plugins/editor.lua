@@ -6,6 +6,9 @@ return {
   {
     "folke/todo-comments.nvim",
     dependencies = "nvim-lua/plenary.nvim",
+    -- Load on file open so comment highlighting/signs are active immediately;
+    -- `keys` alone would only load the plugin once a mapping is pressed.
+    event = { "BufReadPost", "BufNewFile" },
     opts = {},
     keys = {
       {
