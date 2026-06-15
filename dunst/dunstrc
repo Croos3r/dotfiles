@@ -1,0 +1,101 @@
+[global]
+    # Display notifications at top-center
+    origin = top-center
+    
+    # Offset from the origin (x, y)
+    offset = 0x30
+    
+    # Notification width - smaller for compact notifications
+    width = (300, 400)
+    
+    # Maximum height
+    height = 200
+    
+    # Notification padding
+    padding = 8
+    horizontal_padding = 10
+    
+    # Frame settings
+    frame_width = 2
+    frame_color = "#8ec07c"
+    
+    # Separator settings
+    separator_height = 2
+    separator_color = frame
+    
+    # Font
+    font = Monospace 10
+    
+    # Line height
+    line_height = 0
+    
+    # Markup
+    markup = full
+    
+    # Format of notifications
+    format = "<b>%s</b>\n%b"
+    
+    # Alignment of text
+    alignment = left
+    vertical_alignment = center
+    
+    # Show age if message is older than this time
+    show_age_threshold = 60
+    
+    # Word wrap
+    word_wrap = yes
+    
+    # Ignore newlines
+    ignore_newline = no
+    
+    # Stack duplicate notifications
+    stack_duplicates = true
+    hide_duplicate_count = false
+    
+    # Display indicators for URLs and actions
+    show_indicators = yes
+    
+    # Icon settings
+    icon_position = left
+    min_icon_size = 32
+    max_icon_size = 48
+    
+    # Icon path
+    icon_path = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
+    
+    # Notification timeout (in seconds, 0 = never expire)
+    timeout = 5
+    
+    # Mouse actions
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+    
+    # Transparency (0-100)
+    transparency = 0
+    
+    # Corner radius
+    corner_radius = 8
+    
+    # Progress bar settings
+    progress_bar = true
+    progress_bar_height = 10
+    progress_bar_frame_width = 1
+    progress_bar_min_width = 150
+    progress_bar_max_width = 300
+
+[urgency_low]
+    background = "#282828"
+    foreground = "#ebdbb2"
+    timeout = 5
+
+[urgency_normal]
+    background = "#458588"
+    foreground = "#ebdbb2"
+    timeout = 7
+
+[urgency_critical]
+    background = "#cc241d"
+    foreground = "#ebdbb2"
+    frame_color = "#fb4934"
+    timeout = 0
