@@ -69,6 +69,7 @@ input type:touchpad {
 }
 
 ### Autostart
+exec dbus-update-activation-environment --systemd XDG_SESSION_TYPE=wayland
 exec foot --server
 exec autotiling
 exec dunst
@@ -234,6 +235,7 @@ bindsym $mod+l exec loginctl lock-session
 bindsym $mod+Shift+Return exec brave-browser
 bindsym $mod+comma exec rofimoji
 bindsym $mod+Shift+question exec rofi -show filebrowser
+bindsym $mod+n exec nautilus
 
 ## Screenshots
 bindsym $mod+Print exec flameshot gui
