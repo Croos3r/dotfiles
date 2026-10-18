@@ -1,0 +1,21 @@
+[general]
+base_currency = USD 
+display = price
+
+[bitcoin]
+icon = BTC
+
+[plasma]
+icon = XPL
+
+[ethereum]
+icon = ETH
+
+[solana]
+icon = SOL
+
+[binancecoin]
+icon = BNB
+
+[aleph-im]
+icon = ALEPH

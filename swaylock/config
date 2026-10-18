@@ -1,0 +1,19 @@
+# swaylock config (Catppuccin Mocha) — replaces i3lock-fancy (see swaylock(1))
+color=1e1e2e
+show-failed-attempts
+ignore-empty-password
+indicator-caps-lock
+font=JetBrainsMono Nerd Font
+inside-color=1e1e2e
+ring-color=313244
+key-hl-color=89b4fa
+bs-hl-color=f38ba8
+line-color=00000000
+separator-color=00000000
+text-color=cdd6f4
+inside-ver-color=313244
+ring-ver-color=a6e3a1
+text-ver-color=cdd6f4
+inside-wrong-color=f38ba8
+ring-wrong-color=f38ba8
+text-wrong-color=cdd6f4

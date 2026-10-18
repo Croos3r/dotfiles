@@ -1,0 +1,66 @@
+/* Catppuccin Mocha, mapped onto the polybar colour roles */
+@define-color background     #1e1e2e; /* base */
+@define-color background-alt #313244; /* surface0 */
+@define-color foreground     #cdd6f4; /* text */
+@define-color primary        #89b4fa; /* blue */
+@define-color secondary      #94e2d5; /* teal */
+@define-color alert          #f38ba8; /* red */
+@define-color disabled       #6c7086; /* overlay0 */
+
+* {
+  font-family: "JetBrainsMonoNL Nerd Font", "JetBrainsMono Nerd Font", monospace;
+  font-weight: 500;
+  font-size: 14px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: @background;
+  color: @foreground;
+  border-radius: 6px;
+}
+
+/* Workspaces */
+#workspaces button {
+  padding: 0 8px;
+  color: @foreground;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+#workspaces button.focused {
+  background: @background-alt;
+  box-shadow: inset 0 -3px @primary;
+}
+
+#workspaces button.urgent {
+  background: @alert;
+}
+
+#mode {
+  padding: 0 8px;
+  background: @alert;
+}
+
+/* Right-hand modules, separated by "|" like polybar */
+.modules-right > widget > * {
+  padding: 0 8px;
+}
+
+.modules-right > widget:not(:first-child) > * {
+  border-left: 1px solid @disabled;
+}
+
+#language,
+#clock {
+  color: @primary;
+}
+
+#pulseaudio.muted {
+  color: @disabled;
+}
+
+#battery.critical:not(.charging) {
+  color: @alert;
+}

@@ -1,11 +1,11 @@
 {
   "parser-directories": [
-    "/home/dorian/github",
-    "/home/dorian/src",
-    "/home/dorian/source",
-    "/home/dorian/projects",
-    "/home/dorian/dev",
-    "/home/dorian/git"
+    "~/github",
+    "~/src",
+    "~/source",
+    "~/projects",
+    "~/dev",
+    "~/git"
   ],
   "theme": {
     "attribute": {

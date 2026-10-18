@@ -142,33 +142,33 @@ force_redraw = ["f"]
 # The single line bar at the uppermost of the display. Contains name/state/status headings etc
 [colors.headers_bar]
 # Background color of the entire line
-background = "magenta"
+background = "#cba6f7"
 # Animated loading icon at the start of the bar
-loading_spinner = "white"
+loading_spinner = "#cdd6f4"
 # Text color
-text = "black"
+text = "#11111b"
 # Text color of a selected header
-text_selected = "gray"
+text_selected = "#7f849c"
 
 # The borders around the selectable panels - Containers, Commands, Logs
 [colors.borders]
 # Border when selected
-selected = "lightcyan"
+selected = "#89dceb"
 # Border when not selected
-unselected = "grey"
+unselected = "#7f849c"
 
 # The containers sections, in the future more color customization options should be made available in this section
 [colors.containers]
 # The icon use to illustrate which container is currently selected - at the moment the  TUI library, ratatui, doesn't seem allow changing the color of the highlight symbol
-icon = "white"
+icon = "#cdd6f4"
 # Background color of panel
 background = "reset"
 # At the moment, this will only change the color of the name, id, and image columns
-text = "blue"
+text = "#89b4fa"
 # Text color of the RX column
-text_rx = "#FFE9C1"
+text_rx = "#f9e2af"
 # Text color of the TX column
-text_tx = "#CD8C8C"
+text_tx = "#eba0ac"
 
 # The logs panel, will only be applied if color_logs is false
 [colors.logs]
@@ -179,27 +179,27 @@ text = "reset"
 
 # Each state of a container has a color, which is used in multiple places, i.e. chart titles, state/status/cpu/memory columns in the container section
 [colors.container_state]
-dead = "red"
-exited = "red"
-paused = "yellow"
-removing = "lightred"
-restarting = "lightgreen"
-running_healthy = "green"
-running_unhealthy = "#FFB224"
-unknown = "red"
+dead = "#f38ba8"
+exited = "#f38ba8"
+paused = "#f9e2af"
+removing = "#eba0ac"
+restarting = "#94e2d5"
+running_healthy = "#a6e3a1"
+running_unhealthy = "#fab387"
+unknown = "#f38ba8"
 
 # The filter panel
 [colors.filter]
 # Background color of panel
 background = "reset"
 # color of text
-text = "gray"
+text = "#7f849c"
 # background color of the selected filter by item (Name/Image/Status/All)
-selected_filter_background = "gray"
+selected_filter_background = "#7f849c"
 # text color of the selected filter by item (Name/Image/Status/All)
-selected_filter_text = "black"
+selected_filter_text = "#11111b"
 # Highlighted text color
-highlight = "magenta"
+highlight = "#cba6f7"
 
 
 # The log search panel
@@ -207,94 +207,94 @@ highlight = "magenta"
 # Background color of panel
 background = "reset"
 # color of text
-text = "gray"
+text = "#7f849c"
 # text color of the buttons text
-button_text = "black"
+button_text = "#11111b"
 # Highlighted text color
-highlight = "magenta"
+highlight = "#cba6f7"
 
 # The color the of Docker commands available for each container
 [colors.commands]
 # Background color of panel
 background = "reset"
-pause = "yellow"
-restart = "magenta"
-stop = "red"
-delete = "gray"
-resume = "blue"
-start = "green"
+pause = "#f9e2af"
+restart = "#cba6f7"
+stop = "#f38ba8"
+delete = "#7f849c"
+resume = "#89b4fa"
+start = "#a6e3a1"
 
 # The cpu chart
 [colors.chart_cpu]
 # Background color of panel
 background = "reset"
 # Border color
-border = "white"
+border = "#cdd6f4"
 # Chart title - only whilst container is running, paused & stopped colors not yet customizable - or could just use state color?
-title = "green"
+title = "#a6e3a1"
 # Maximum CPU percentage - again paused & stopped colors not yet customizable
-max = "#FFB224"
+max = "#fab387"
 # Points on the chart - again paused & stopped colors not yet customizable
-points = "magenta"
+points = "#cba6f7"
 # The charts y-axis
-y_axis = "white"
+y_axis = "#cdd6f4"
 
 # The memory chart
 [colors.chart_memory]
 # Background color of panel
 background = "reset"
 # Border color
-border = "white"
+border = "#cdd6f4"
 # Chart title - only whilst container is running, paused & stopped will use colors.container_state
-title = "green"
+title = "#a6e3a1"
 # Maximum memory use - again paused & stopped will use colors.container_state
-max = "#FFB224"
+max = "#fab387"
 # Points on the chart - again paused & stopped will use colors.container_state
-points = "cyan"
+points = "#94e2d5"
 # The charts y-axis
-y_axis = "white"
+y_axis = "#cdd6f4"
 
 # The ports chart
 [colors.chart_ports]
 # Background color of panel
 background = "reset"
 # Border color
-border = "white"
+border = "#cdd6f4"
 # Chart title - only whilst container is running, paused & stopped will use colors.container_state
-title = "green"
+title = "#a6e3a1"
 # Private/Public/IP headings
-headings = "yellow"
+headings = "#f9e2af"
 # Ports & IP listing text
-text = "white"
+text = "#cdd6f4"
 
 # The help popup
 [colors.popup_help]
 # Background color
-background = "magenta"
+background = "#cba6f7"
 # Text color
-text = "black"
+text = "#11111b"
 # Highlighted text color
-text_highlight = "white"
+text_highlight = "#cdd6f4"
 
 # The info popup - used to display small messages - such as saving logs to disk, or change of mouse capture settings
 [colors.popup_info]
 # Background color
-background = "blue"
+background = "#89b4fa"
 # Text color
-text = "white"
+text = "#cdd6f4"
 
 # The delete popup - used to display a confirmation warning when about to delete a container
 [colors.popup_delete]
 # Background color
-background = "white"
+background = "#cdd6f4"
 # Text color
-text = "black"
+text = "#11111b"
 # Highlighted text color
-text_highlight = "red"
+text_highlight = "#f38ba8"
 
 # The error popup - hopefully you'll never have to see this
 [colors.popup_error]
 # Background color
-background = "red"
+background = "#f38ba8"
 # Text color
-text = "white"
+text = "#cdd6f4"

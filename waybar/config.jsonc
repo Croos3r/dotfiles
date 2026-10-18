@@ -1,0 +1,95 @@
+// Waybar config — ported from ../polybar/config.ini
+{
+  "position": "bottom",
+  "height": 32,
+  "margin": "5 5 5 5",
+  "spacing": 0,
+
+  "modules-left": ["sway/workspaces", "sway/mode"],
+  "modules-right": [
+    "custom/spotify-prev",
+    "custom/spotify",
+    "custom/spotify-play-pause",
+    "custom/spotify-next",
+    "custom/crypto",
+    "battery",
+    "pulseaudio",
+    "sway/language",
+    "network",
+    "clock",
+    "tray"
+  ],
+
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "format": "{name}"
+  },
+
+  "sway/language": {
+    "format": "{short}"
+  },
+
+  "pulseaudio": {
+    "format": "<span color='#89b4fa'>VOL</span> {volume}%",
+    "format-muted": "muted",
+    "on-click": "amixer -q sset Master,0 toggle"
+  },
+
+  "network": {
+    "format-wifi": "<span color='#89b4fa'>{ifname}</span> {essid} {ipaddr}",
+    "format-ethernet": "<span color='#89b4fa'>{ifname}</span> {ipaddr}",
+    "format-disconnected": "<span color='#89b4fa'>{ifname}</span> <span color='#6c7086'>disconnected</span>",
+    "tooltip-format": "{ifname} via {gwaddr}",
+    "on-click": "foot nmtui"
+  },
+
+  "clock": {
+    "interval": 1,
+    "format": "{:%Y-%m-%d %H:%M:%S}",
+    "format-alt": "{:%A, %d %B %Y %H:%M:%S}",
+    "tooltip": false
+  },
+
+  "battery": {
+    "bat": "BAT1",
+    "adapter": "ACAD",
+    "interval": 5,
+    "states": { "critical": 10 },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-full": "Fully charged",
+    "format-critical": "BATTERY LOW @ {capacity}% ",
+    "format-icons": ["", "", "", "", ""]
+  },
+
+  "tray": {
+    "spacing": 16
+  },
+
+  "custom/crypto": {
+    "exec": "~/.config/waybar/scripts/scroll_crypto_status.sh",
+    "on-click": "brave-browser --new-window 'https://coinmarketcap.com/'"
+  },
+
+  "custom/spotify": {
+    "exec": "~/.config/waybar/scripts/scroll_spotify_status.sh"
+  },
+
+  "custom/spotify-prev": {
+    "format": "󰒮",
+    "on-click": "playerctl previous -p spotify",
+    "tooltip": false
+  },
+
+  "custom/spotify-play-pause": {
+    "exec": "~/.config/waybar/scripts/spotify_play_pause.sh",
+    "on-click": "playerctl play-pause -p spotify",
+    "tooltip": false
+  },
+
+  "custom/spotify-next": {
+    "format": "󰒭",
+    "on-click": "playerctl next -p spotify",
+    "tooltip": false
+  }
+}

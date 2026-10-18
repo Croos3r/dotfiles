@@ -10,7 +10,7 @@
 		"layout": "horizontal"
 	},
 	"theme": {
-		"name": "catppuccin-macchiato"
+		"name": "catppuccin"
 	},
 	"keybinds": {
 		"leader": "ctrl+space"

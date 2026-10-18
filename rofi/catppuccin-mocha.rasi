@@ -1,0 +1,93 @@
+/* Catppuccin Mocha for rofi */
+
+* {
+  base:     #1e1e2e;
+  mantle:   #181825;
+  surface0: #313244;
+  surface1: #45475a;
+  overlay0: #6c7086;
+  text:     #cdd6f4;
+  subtext0: #a6adc8;
+  blue:     #89b4fa;
+  red:      #f38ba8;
+
+  background-color: transparent;
+  text-color:       @text;
+  spacing:          0;
+}
+
+window {
+  width:            40%;
+  background-color: @base;
+  border:           2px;
+  border-color:     @blue;
+  border-radius:    12px;
+  padding:          12px;
+}
+
+mainbox {
+  spacing: 10px;
+}
+
+inputbar {
+  background-color: @surface0;
+  border-radius:    8px;
+  padding:          8px 12px;
+  spacing:          8px;
+  children:         [ prompt, entry ];
+}
+
+prompt {
+  text-color: @blue;
+}
+
+entry {
+  placeholder:       "Search…";
+  placeholder-color: @overlay0;
+}
+
+message {
+  background-color: @mantle;
+  border-radius:    8px;
+  padding:          8px;
+}
+
+listview {
+  lines:     10;
+  columns:   1;
+  spacing:   4px;
+  scrollbar: false;
+}
+
+element {
+  padding:       6px 10px;
+  border-radius: 8px;
+  spacing:       10px;
+}
+
+element normal.urgent,
+element alternate.urgent {
+  text-color: @red;
+}
+
+element normal.active,
+element alternate.active {
+  text-color: @blue;
+}
+
+element selected {
+  background-color: @surface1;
+}
+
+element selected.urgent {
+  background-color: @red;
+  text-color:       @base;
+}
+
+element-icon {
+  size: 1.2em;
+}
+
+element-text {
+  text-color: inherit;
+}

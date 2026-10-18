@@ -6,4 +6,4 @@ configuration {
   show-icons: true;
 }
 
-@theme "/usr/share/rofi/themes/Monokai.rasi"
+@theme "catppuccin-mocha"

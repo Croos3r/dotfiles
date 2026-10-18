@@ -1,0 +1,252 @@
+# sway config — ported from ../i3/config
+#
+# See sway(5) and `man 5 sway-input` / `man 5 sway-output` for a complete reference.
+
+set $mod Mod4
+set $term footclient
+
+# Font for window titles.
+font pango:JetBrainsMono Nerd Font Medium 8
+
+### Catppuccin Mocha (https://github.com/catppuccin/catppuccin)
+set $rosewater #f5e0dc
+set $flamingo  #f2cdcd
+set $pink      #f5c2e7
+set $mauve     #cba6f7
+set $red       #f38ba8
+set $maroon    #eba0ac
+set $peach     #fab387
+set $yellow    #f9e2af
+set $green     #a6e3a1
+set $teal      #94e2d5
+set $sky       #89dceb
+set $sapphire  #74c7ec
+set $blue      #89b4fa
+set $lavender  #b4befe
+set $text      #cdd6f4
+set $subtext1  #bac2de
+set $subtext0  #a6adc8
+set $overlay2  #9399b2
+set $overlay1  #7f849c
+set $overlay0  #6c7086
+set $surface2  #585b70
+set $surface1  #45475a
+set $surface0  #313244
+set $base      #1e1e2e
+set $mantle    #181825
+set $crust     #11111b
+
+# class                 border    bground   text     indicator  child_border
+client.focused          $lavender $base     $text    $rosewater $lavender
+client.focused_inactive $overlay0 $base     $text    $rosewater $overlay0
+client.unfocused        $overlay0 $base     $text    $rosewater $overlay0
+client.urgent           $peach    $base     $peach   $overlay0  $peach
+client.placeholder      $overlay0 $base     $text    $overlay0  $overlay0
+client.background       $base
+
+seat seat0 xcursor_theme catppuccin-mocha-dark-cursors 24
+
+### Outputs
+# Laptop panel on the left, external screen on the right (was: xrandr --left-of).
+# eDP-1 is 2880x1920 @ 1.5 scale → 1920 logical px wide.
+output eDP-1 scale 1.5 pos 0 0
+output HDMI-A-1 pos 1920 0
+
+# Wallpapers (was: feh --bg-scale). Solid fallback until the images exist.
+output * bg $base solid_color
+exec_always sh -c '\
+  f="$HOME/Pictures/hardstyle-defqon-1-qdance.jpg"; [ -f "$f" ] && swaymsg output eDP-1 bg "$f" fill; \
+  f="$HOME/Pictures/PNG/fond_ecran.jpg"; [ -f "$f" ] && swaymsg output HDMI-A-1 bg "$f" fill; true'
+
+### Input
+input type:keyboard {
+    xkb_layout ca
+}
+
+input type:touchpad {
+    tap enabled
+    natural_scroll enabled
+}
+
+### Autostart
+exec foot --server
+exec autotiling
+exec dunst
+exec nm-applet --indicator
+
+# Start XDG autostart .desktop files using dex.
+exec dex --autostart --environment sway
+
+# Lock after 10 min idle, blank after 15, and before suspend (was: xss-lock + i3lock-fancy).
+# `loginctl lock-session` triggers the `lock` event below.
+exec swayidle -w \
+    timeout 600 'swaylock -f' \
+    timeout 900 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+    before-sleep 'swaylock -f' \
+    lock 'swaylock -f'
+
+### Media keys
+bindsym XF86AudioRaiseVolume exec "amixer -q sset Master,0 1310+ unmute"
+bindsym XF86AudioLowerVolume exec "amixer -q sset Master,0 1310- unmute"
+bindsym XF86AudioMute exec "amixer -q sset Master,0 toggle"
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86MonBrightnessUp exec brightnessctl s +5%
+bindsym XF86MonBrightnessDown exec brightnessctl s 5%-
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod normal
+
+# move tiling windows via drag & drop
+tiling_drag enable
+
+# start a terminal
+bindsym $mod+Return exec $term
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+bindsym $mod+space exec rofi -show drun
+bindsym $mod+Shift+space exec rofi -show run
+
+# change focus
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+focus_follows_mouse no
+
+hide_edge_borders both
+
+# move focused window
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+h split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+z layout tabbed
+bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+f floating toggle
+
+# focus the parent container
+bindsym $mod+q focus parent
+
+### Workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+workspace $ws1 output eDP-1
+workspace $ws2 output eDP-1
+workspace $ws3 output HDMI-A-1 eDP-1
+workspace $ws4 output HDMI-A-1 eDP-1
+
+assign [class="^Brave-browser$"] workspace number $ws1
+assign [app_id="^brave-browser$"] workspace number $ws1
+assign [class="^discord$"] workspace number $ws2
+assign [app_id="^discord$"] workspace number $ws2
+assign [class="^jetbrains-.+$"] workspace number $ws3
+assign [app_id="^foot$"] workspace number $ws4
+assign [class="^Mixx$"] workspace number $ws3
+# Spotify sets its class after mapping, so assign alone misses it.
+for_window [class="^Spotify$"] move container to workspace number $ws5
+
+for_window [app_id="^org.gnome.Calculator$"] floating enable, resize set 360 528, move position 1540 20
+for_window [class="^Matplotlib$"] floating enable, resize set 1200 800, move position 720 120
+for_window [app_id="^Matplotlib$"] floating enable, resize set 1200 800, move position 720 120
+
+# Workspace keys are bound by keycode (the number row: 10 = 1 … 19 = 0) so they
+# land on the same physical keys whatever the layout (AZERTY &é"'(-è_çà, or ca).
+
+# switch to workspace
+bindcode $mod+10 workspace number $ws1
+bindcode $mod+11 workspace number $ws2
+bindcode $mod+12 workspace number $ws3
+bindcode $mod+13 workspace number $ws4
+bindcode $mod+14 workspace number $ws5
+bindcode $mod+15 workspace number $ws6
+bindcode $mod+16 workspace number $ws7
+bindcode $mod+17 workspace number $ws8
+bindcode $mod+18 workspace number $ws9
+bindcode $mod+19 workspace number $ws10
+
+# move focused container to workspace
+bindcode $mod+Shift+10 move container to workspace number $ws1
+bindcode $mod+Shift+11 move container to workspace number $ws2
+bindcode $mod+Shift+12 move container to workspace number $ws3
+bindcode $mod+Shift+13 move container to workspace number $ws4
+bindcode $mod+Shift+14 move container to workspace number $ws5
+bindcode $mod+Shift+15 move container to workspace number $ws6
+bindcode $mod+Shift+16 move container to workspace number $ws7
+bindcode $mod+Shift+17 move container to workspace number $ws8
+bindcode $mod+Shift+18 move container to workspace number $ws9
+bindcode $mod+Shift+19 move container to workspace number $ws10
+
+# reload the configuration file (sway has no in-place restart; both reload)
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r reload
+# exit sway (logs you out of your Wayland session)
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+### Bar
+bar {
+    swaybar_command waybar
+}
+
+# Shortcuts
+
+bindsym $mod+l exec loginctl lock-session
+bindsym $mod+Shift+Return exec brave-browser
+bindsym $mod+comma exec rofimoji
+bindsym $mod+Shift+question exec rofi -show filebrowser
+
+## Screenshots
+bindsym $mod+Print exec flameshot gui
+# Fallback if flameshot misbehaves: select a region, annotate in swappy.
+bindsym $mod+Shift+Print exec sh -c 'grim -g "$(slurp)" - | swappy -f -'
+
+# Tiles
+
+default_border pixel 0
+default_floating_border pixel 0
+
+gaps inner 10
+gaps outer 10
+
+# Distro snippets (exports WAYLAND_DISPLAY etc. to systemd/dbus so portals work).
+include /etc/sway/config.d/*

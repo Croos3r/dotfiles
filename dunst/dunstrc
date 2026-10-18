@@ -17,14 +17,15 @@
     
     # Frame settings
     frame_width = 2
-    frame_color = "#8ec07c"
+    frame_color = "#89b4fa"
     
     # Separator settings
     separator_height = 2
     separator_color = frame
+    highlight = "#89b4fa"
     
     # Font
-    font = Monospace 10
+    font = JetBrainsMono Nerd Font 10
     
     # Line height
     line_height = 0
@@ -85,17 +86,17 @@
     progress_bar_max_width = 300
 
 [urgency_low]
-    background = "#282828"
-    foreground = "#ebdbb2"
+    background = "#1e1e2e"
+    foreground = "#cdd6f4"
     timeout = 5
 
 [urgency_normal]
-    background = "#458588"
-    foreground = "#ebdbb2"
+    background = "#1e1e2e"
+    foreground = "#cdd6f4"
     timeout = 7
 
 [urgency_critical]
-    background = "#cc241d"
-    foreground = "#ebdbb2"
-    frame_color = "#fb4934"
+    background = "#1e1e2e"
+    foreground = "#cdd6f4"
+    frame_color = "#fab387"
     timeout = 0
