@@ -55,8 +55,7 @@ output HDMI-A-1 pos 1920 0
 # Wallpapers (was: feh --bg-scale). Solid fallback until the images exist.
 output * bg $crust solid_color
 exec_always sh -c '\
-  f="$HOME/Pictures/hardstyle-defqon-1-qdance.jpg"; [ -f "$f" ] && swaymsg output eDP-1 bg "$f" fill; \
-  f="$HOME/Pictures/PNG/fond_ecran.jpg"; [ -f "$f" ] && swaymsg output HDMI-A-1 bg "$f" fill; true'
+  f="$HOME/Pictures/defqon-bg.jpg"; [ -f "$f" ] && swaymsg output "*" bg "$f" fill; true'
 
 ### Input
 input type:keyboard {
@@ -79,12 +78,13 @@ exec nm-applet --indicator
 exec dex --autostart --environment sway
 
 # Lock after 10 min idle, blank after 15, and before suspend (was: xss-lock + i3lock-fancy).
+# blur-lock wraps swaylock with a blurred snapshot of each output.
 # `loginctl lock-session` triggers the `lock` event below.
 exec swayidle -w \
-    timeout 600 'swaylock -f' \
+    timeout 600 ~/.config/swaylock/blur-lock \
     timeout 900 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-    before-sleep 'swaylock -f' \
-    lock 'swaylock -f'
+    before-sleep ~/.config/swaylock/blur-lock \
+    lock ~/.config/swaylock/blur-lock
 
 ### Media keys
 bindsym XF86AudioRaiseVolume exec "amixer -q sset Master,0 1310+ unmute"
@@ -252,6 +252,9 @@ gaps outer 10
 
 # Rounded window corners (SwayFX only; plain sway rejects this line)
 corner_radius 10
+
+# Animate windows opening and closing (SwayFX only; it has no workspace transitions)
+animation_duration_ms 200
 
 # Distro snippets (exports WAYLAND_DISPLAY etc. to systemd/dbus so portals work).
 include /etc/sway/config.d/*

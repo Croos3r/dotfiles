@@ -23,7 +23,7 @@ PACKAGES=(
     grim slurp swappy wl-clipboard
     autotiling dex network-manager-gnome
     playerctl brightnessctl alsa-utils
-    python3-requests curl unzip
+    python3-requests python3-pil curl unzip
     # shell + CLI tools (fish functions, lazygit, btop, ...)
     fish starship bat btop lazygit gh git zoxide eza fzf fd-find ripgrep sl pyenv
     # neovim + the toolchains its language modules expect

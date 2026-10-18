@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+# Lock with a blurred, dimmed snapshot of each output (replaces i3lock-fancy).
+# Falls back to plain swaylock if anything goes wrong, so the screen always locks.
+
+import json
+import os
+import subprocess
+import sys
+import tempfile
+
+from PIL import Image, ImageEnhance, ImageFilter
+
+DOWNSCALE = 6    # blur a smaller copy: much faster and smoother than a huge radius
+RADIUS = 4
+BRIGHTNESS = 0.7
+
+
+def blurred_snapshots(tmpdir):
+    outputs = json.loads(subprocess.check_output(['swaymsg', '-t', 'get_outputs', '-r']))
+    args = []
+    for output in outputs:
+        if not output.get('active'):
+            continue
+        name = output['name']
+        raw = os.path.join(tmpdir, f'{name}.ppm')
+        path = os.path.join(tmpdir, f'{name}.png')
+        # Uncompressed PPM in, uncompressed PNG out: grim's PNG encoding alone takes ~1s on a HiDPI screen.
+        subprocess.run(['grim', '-t', 'ppm', '-o', name, raw], check=True)
+        with Image.open(raw) as img:
+            size = img.size
+            small = img.convert('RGB').resize((max(1, size[0] // DOWNSCALE), max(1, size[1] // DOWNSCALE)), Image.BILINEAR)
+            small = small.filter(ImageFilter.GaussianBlur(RADIUS))
+            small = ImageEnhance.Brightness(small).enhance(BRIGHTNESS)
+            small.resize(size, Image.BICUBIC).save(path, compress_level=0)
+        args += ['-i', f'{name}:{path}']
+    return args
+
+
+def main():
+    # Already locked: a snapshot now would just capture the lock screen.
+    if subprocess.run(['pgrep', '-x', 'swaylock'], stdout=subprocess.DEVNULL).returncode == 0:
+        return 0
+
+    tmpdir = tempfile.mkdtemp(prefix='blur-lock-', dir=os.environ.get('XDG_RUNTIME_DIR'))
+    try:
+        images = blurred_snapshots(tmpdir)
+    except Exception as e:
+        print(f'blur-lock: {e}, locking without blur', file=sys.stderr)
+        images = []
+
+    # -f returns once the lock is in place, so swayidle's before-sleep still blocks suspend until locked.
+    result = subprocess.run(['swaylock', '-f', *images, *sys.argv[1:]])
+    for f in os.listdir(tmpdir):
+        os.remove(os.path.join(tmpdir, f))
+    os.rmdir(tmpdir)
+    return result.returncode
+
+
+if __name__ == '__main__':
+    sys.exit(main())
