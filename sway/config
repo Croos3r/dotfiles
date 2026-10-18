@@ -248,5 +248,8 @@ default_floating_border pixel 2
 gaps inner 10
 gaps outer 10
 
+# Rounded window corners (SwayFX only; plain sway rejects this line)
+corner_radius 10
+
 # Distro snippets (exports WAYLAND_DISPLAY etc. to systemd/dbus so portals work).
 include /etc/sway/config.d/*
