@@ -53,7 +53,7 @@ output eDP-1 scale 1.5 pos 0 0
 output HDMI-A-1 pos 1920 0
 
 # Wallpapers (was: feh --bg-scale). Solid fallback until the images exist.
-output * bg $base solid_color
+output * bg $crust solid_color
 exec_always sh -c '\
   f="$HOME/Pictures/hardstyle-defqon-1-qdance.jpg"; [ -f "$f" ] && swaymsg output eDP-1 bg "$f" fill; \
   f="$HOME/Pictures/PNG/fond_ecran.jpg"; [ -f "$f" ] && swaymsg output HDMI-A-1 bg "$f" fill; true'
@@ -116,7 +116,7 @@ bindsym $mod+Right focus right
 
 focus_follows_mouse no
 
-hide_edge_borders both
+hide_edge_borders none
 
 # move focused window
 bindsym $mod+Shift+Left move left
@@ -242,8 +242,8 @@ bindsym $mod+Shift+Print exec sh -c 'grim -g "$(slurp)" - | swappy -f -'
 
 # Tiles
 
-default_border pixel 0
-default_floating_border pixel 0
+default_border pixel 2
+default_floating_border pixel 2
 
 gaps inner 10
 gaps outer 10

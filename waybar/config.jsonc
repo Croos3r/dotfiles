@@ -15,7 +15,6 @@
     "battery",
     "pulseaudio",
     "sway/language",
-    "network",
     "clock",
     "tray"
   ],
@@ -33,14 +32,6 @@
     "format": "<span color='#89b4fa'>VOL</span> {volume}%",
     "format-muted": "muted",
     "on-click": "amixer -q sset Master,0 toggle"
-  },
-
-  "network": {
-    "format-wifi": "<span color='#89b4fa'>{ifname}</span> {essid} {ipaddr}",
-    "format-ethernet": "<span color='#89b4fa'>{ifname}</span> {ipaddr}",
-    "format-disconnected": "<span color='#89b4fa'>{ifname}</span> <span color='#6c7086'>disconnected</span>",
-    "tooltip-format": "{ifname} via {gwaddr}",
-    "on-click": "foot nmtui"
   },
 
   "clock": {

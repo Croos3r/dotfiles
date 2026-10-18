@@ -1,6 +1,6 @@
 /* Catppuccin Mocha, mapped onto the polybar colour roles */
-@define-color background     #1e1e2e; /* base */
-@define-color background-alt #313244; /* surface0 */
+@define-color background     #313244; /* surface0 */
+@define-color background-alt #45475a; /* surface1 */
 @define-color foreground     #cdd6f4; /* text */
 @define-color primary        #89b4fa; /* blue */
 @define-color secondary      #94e2d5; /* teal */
@@ -14,10 +14,17 @@
   min-height: 0;
 }
 
+/* Transparent bar; each module is its own rounded "pill" with gaps between */
 window#waybar {
-  background: @background;
+  background: transparent;
   color: @foreground;
-  border-radius: 6px;
+}
+
+#workspaces,
+#mode,
+.modules-right > widget > * {
+  background: @background;
+  border-radius: 10px;
 }
 
 /* Workspaces */
@@ -26,30 +33,49 @@ window#waybar {
   color: @foreground;
   background: transparent;
   border: none;
-  border-radius: 0;
+  border-radius: 10px;
 }
 
 #workspaces button.focused {
   background: @background-alt;
-  box-shadow: inset 0 -3px @primary;
+  color: @primary;
 }
 
 #workspaces button.urgent {
   background: @alert;
+  color: @background;
 }
 
 #mode {
-  padding: 0 8px;
+  margin-left: 6px;
+  padding: 0 10px;
   background: @alert;
+  color: @background;
 }
 
-/* Right-hand modules, separated by "|" like polybar */
+/* Right-hand modules */
 .modules-right > widget > * {
-  padding: 0 8px;
+  padding: 0 12px;
+  margin-left: 6px;
 }
 
-.modules-right > widget:not(:first-child) > * {
-  border-left: 1px solid @disabled;
+/* Spotify prev / track / play-pause / next sit together in one pill */
+#custom-spotify-prev {
+  border-radius: 10px 0 0 10px;
+  padding-right: 4px;
+}
+
+#custom-spotify,
+#custom-spotify-play-pause {
+  border-radius: 0;
+  margin-left: 0;
+  padding: 0 4px;
+}
+
+#custom-spotify-next {
+  border-radius: 0 10px 10px 0;
+  margin-left: 0;
+  padding-left: 4px;
 }
 
 #language,
