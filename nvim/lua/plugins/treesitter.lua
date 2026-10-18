@@ -19,7 +19,13 @@ return {
   opts_extend = { "ensure_installed" },
   config = function(_, opts)
     local ts = require("nvim-treesitter")
-    ts.setup({})
+    ts.setup({
+	  ensure_installed = opts.ensure_installed,
+	  highlight = {
+		enable = true,
+		additional_vim_regex_highlighting = false,
+	  },
+	})
     -- Install any missing parsers for the aggregated list.
     ts.install(opts.ensure_installed)
 

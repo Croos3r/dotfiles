@@ -1,0 +1,18 @@
+{
+	"$schema": "https://opencode.ai/v2/cli.json",
+	"session": {
+		"sidebar": "hide"
+	},
+	"diffs": {
+		"view": "auto"
+	},
+	"tabs": {
+		"layout": "horizontal"
+	},
+	"theme": {
+		"name": "catppuccin-macchiato"
+	},
+	"keybinds": {
+		"leader": "ctrl+space"
+	}
+}

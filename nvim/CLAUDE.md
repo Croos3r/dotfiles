@@ -28,7 +28,7 @@ How each concern merges (see `lua/plugins/lang/README.md` for the authoritative 
 
 `lua/core/lsp.lua` is the helper every server goes through. It uses Neovim 0.11's native `vim.lsp.config`/`vim.lsp.enable` (the deprecated `lspconfig.<name>.setup()` framework is deliberately avoided). `plugins/lsp.lua`'s `config` iterates `opts.servers` and calls `core.lsp.setup(name, cfg)` for each. So **just add to `opts.servers`** — never call `vim.lsp.config`/`enable` yourself. Some servers manage themselves (e.g. `rustaceanvim` owns rust-analyzer); those are plain plugin specs, not `opts.servers` entries.
 
-Per-project settings come from `.neoconf.json` (`"lspconfig.<name>"` keys). neoconf only auto-hooks the deprecated framework, so `core.lsp` reads neoconf's API itself in a `before_init` merge. LSP keymaps (`K`, `gd`, `gr`, `gI`, `gtd`, etc.) are bound buffer-locally on `LspAttach` in `plugins/lsp.lua`. Diagnostics use a float (`<c-k>`), not inline virtual text.
+Per-project settings come from `.neoconf.json` (`"lspconfig.<name>"` keys). neoconf only auto-hooks the deprecated framework, so `core.lsp` reads neoconf's API itself in a `before_init` merge. LSP keymaps (`K`, `gd`, `gD`, `<leader>rn`, `<leader>ca`) are bound buffer-locally on `LspAttach` in `plugins/lsp.lua`; references/implementation/type-definition use Neovim 0.11's built-in `grr`/`gri`/`grt`, so no bare `gr` mapping may be added (it would shadow the whole `gr*` family behind `timeoutlen`). Diagnostics use a float (`<c-k>`), not inline virtual text.
 
 ## Formatting
 

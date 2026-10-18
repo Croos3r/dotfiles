@@ -8,7 +8,11 @@ return {
     keymap = {
       ["<c-x>"] = { "show", "show_documentation", "hide_documentation" },
       ["<c-e>"] = { "cancel", "fallback" },
-      ["<tab>"] = { "snippet_forward", "accept", "fallback" },
+      ["<tab>"] = {
+        "snippet_forward",
+        function() return require("sidekick").nes_jump_or_apply() end,
+        "fallback",
+      },
       ["<c-y>"] = { "select_and_accept", "fallback" },
       ["<c-k>"] = { "select_prev", "fallback" },
       ["<up>"] = { "select_prev", "fallback" },

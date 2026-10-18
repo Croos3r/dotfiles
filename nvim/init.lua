@@ -3,3 +3,4 @@
 require("core.options")
 require("core.autocmds")
 require("config.lazy")
+require("core.commands")

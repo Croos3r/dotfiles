@@ -58,7 +58,26 @@ return {
   },
   config = function()
     local telescope = require("telescope")
-    telescope.setup({})
+	local actions = require("telescope.actions")
+    telescope.setup({
+		defaults = {
+			mappings = {
+				i = {
+					["<C-d>"] = actions.delete_buffer,
+				},
+				n = {
+					["<C-d>"] = actions.delete_buffer,
+					["dd"] = actions.delete_buffer,
+				}
+			}
+		},
+		pickers = {
+			buffers = {
+				initial_mode = "normal",
+				sort_mru = true,
+			}
+		}
+	})
     pcall(telescope.load_extension, "fzf")
   end,
   keys = {
@@ -67,9 +86,13 @@ return {
     { "fg", function() require("telescope.builtin").live_grep() end, desc = "Telescope live grep" },
     { "fb", function() require("telescope.builtin").buffers() end, desc = "Telescope buffers" },
     { "fh", function() require("telescope.builtin").help_tags() end, desc = "Telescope help tags" },
-    -- Search every keybind (your requested keymap finder)
+	{ "fs", function() require("telescope.builtin").lsp_document_symbols() end, desc = "Telescope local document symbols" },
+	{ "fS", function() require("telescope.builtin").lsp_dynamic_workspace_symbols() end, desc = "Telescope workspace symbols" },
+	{ "fd", function() require("telescope.builtin").diagnostics({ bufnr = 0 }) end, desc = "Telescope buffer diagnostics" },
+	{ "fD", function() require("telescope.builtin").diagnostics({ bufnr = nil }) end, desc = "Telescope buffer global diagnostics" },
     { "fk", function() require("telescope.builtin").keymaps() end, desc = "Telescope keymaps" },
-    -- Find files across all of $HOME, regardless of the directory nvim opened in.
+    { "fr", function() require("telescope.builtin").reloader() end, desc = "Telescope reloadable modules" },
+    { "fa", function() require("telescope.builtin").builtin() end, desc = "Telescopeception" },
     {
       "<leader>ff",
       function()
@@ -80,15 +103,13 @@ return {
       end,
       desc = "Find files (global, $HOME)",
     },
-    -- Change the cwd to a project directory under ~/Projects.
     {
       "<leader>fp",
       function()
-        pick_dir_as_cwd({ root = vim.fn.expand("~/Projects"), prompt_title = "Projects (set cwd)" })
+        pick_dir_as_cwd({ root = vim.fn.expand("~/projects"), prompt_title = "Projects (set cwd)" })
       end,
       desc = "Set cwd to a ~/Projects dir",
     },
-    -- Hop between workspaces within the current dir (monorepo subdir switcher).
     {
       "<leader>fw",
       function()

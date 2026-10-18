@@ -31,11 +31,15 @@ local function neoconf_before_init(name)
     -- Resolve the workspace root, preferring the most reliable source.
     -- rootPath is deprecated; rootUri and workspaceFolders are what modern
     -- clients populate, so check all three.
-    local root = params.rootPath
-    if params.rootUri then
+    local root = type(params.rootPath) == "string" and params.rootPath or nil
+    if type(params.rootUri) == "string" then
       root = vim.uri_to_fname(params.rootUri)
     end
-    if params.workspaceFolders and params.workspaceFolders[1] then
+    if
+      type(params.workspaceFolders) == "table"
+      and params.workspaceFolders[1]
+      and type(params.workspaceFolders[1].uri) == "string"
+    then
       root = vim.uri_to_fname(params.workspaceFolders[1].uri)
     end
     local project = neoconf.get("lspconfig." .. name, nil, root and { file = root } or nil)

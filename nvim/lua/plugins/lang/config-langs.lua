@@ -38,8 +38,8 @@ return {
       formatters_by_ft = {
         sh = { "shfmt" },
         bash = { "shfmt" },
-        json = { "prettier" },
-        jsonc = { "prettier" },
+        -- json/jsonc are formatted by the JS toolchain (typescript.lua), which
+        -- picks biome/deno/prettier based on the project.
         yaml = { "prettier" },
       },
     },

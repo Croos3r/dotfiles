@@ -10,7 +10,7 @@ opt.number = true
 opt.relativenumber = true
 opt.signcolumn = "yes" -- avoid layout shift when diagnostics/gitsigns appear
 opt.termguicolors = true -- required for catppuccin truecolors
-opt.wrap = true
+opt.wrap = false
 opt.scrolloff = 8
 opt.splitright = true
 opt.splitbelow = true
@@ -29,3 +29,14 @@ opt.smartcase = true
 opt.undofile = true -- persistent undo
 opt.updatetime = 250 -- faster CursorHold / diagnostics
 opt.timeoutlen = 400 -- which-key style mapping timeout
+
+-- Treeseitter folding
+opt.foldmethod = "expr"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+opt.foldlevel = 99
+opt.foldlevelstart = 99
+opt.foldnestmax = 10
+
+opt.foldcolumn = "1"
+opt.fillchars = { eob = " ", fold = " ", foldopen = "", foldsep = " ", foldclose = "" }

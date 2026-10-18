@@ -1,3 +1,13 @@
+local copilot_lsp = vim.fn.exepath("copilot-language-server")
+if copilot_lsp == "" then
+  local bundled = vim.fn.glob(
+    vim.fn.stdpath("data") .. "/copilot.lua/lsp/**/copilot-language-server",
+    false,
+    true
+  )
+  copilot_lsp = bundled[1] or "copilot-language-server"
+end
+
 return {
   -- Mason: installs LSP servers, formatters and linters.
   { "mason-org/mason.nvim", opts = {} },
@@ -34,14 +44,25 @@ return {
       "saghen/blink.cmp",
     },
     opts = {
-      servers = {}, -- e.g. servers.basedpyright = { settings = {...} }
+      servers = {
+        -- Sidekick's Next Edit Suggestions use the official Copilot LSP.
+        copilot = {
+          cmd = { copilot_lsp, "--stdio" },
+        },
+      },
     },
     config = function(_, opts)
       -- Initialize neoconf so its API is ready for core.lsp's before_init.
       require("neoconf").setup({})
 
-      -- Diagnostics: no inline virtual text; show details in a float instead.
-      vim.diagnostic.config({ virtual_text = false, virtual_lines = false, float = true })
+      -- Diagnostics: virtual text only on the line the cursor is on (shown at
+      -- end of line), so other lines stay uncluttered. `<c-k>` still opens a
+      -- float with the full message.
+      vim.diagnostic.config({
+        virtual_text = { current_line = true },
+        virtual_lines = false,
+        float = true,
+      })
 
       -- Buffer-local LSP keymaps, bound only once a server attaches.
       vim.api.nvim_create_autocmd("LspAttach", {
@@ -54,9 +75,16 @@ return {
           map("<c-k>", vim.diagnostic.open_float, "Show diagnostic")
           map("gD", vim.lsp.buf.declaration, "Go to declaration")
           map("gd", vim.lsp.buf.definition, "Go to definition")
-          map("gI", vim.lsp.buf.implementation, "Go to implementation")
-          map("gr", vim.lsp.buf.references, "References")
-          map("gtd", vim.lsp.buf.type_definition, "Type definition")
+          -- References/implementation/type-definition/codelens intentionally
+          -- have no mapping here: Neovim 0.11 binds them to grr/gri/grt/grx.
+          -- A bare `gr` mapping would shadow that whole family behind
+          -- 'timeoutlen'. `<leader>` aliases below are just friendlier names
+          -- for the built-in grn/gra, and work on a visual range too.
+          map("<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+          vim.keymap.set({ "n", "x" }, "<leader>ca", vim.lsp.buf.code_action, {
+            buffer = args.buf,
+            desc = "Code action",
+          })
         end,
       })
 

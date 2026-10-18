@@ -2,6 +2,15 @@ return {
   -- Surround text objects: cs"' , ds( , ysiw) , etc.
   { "tpope/vim-surround", event = "VeryLazy" },
 
+  -- Case-aware search/replace (:S/:Subvert) and case coercion (crs snake_case,
+  -- crc camelCase, crm MixedCase, cru UPPER, cr- dash, cr. dot, cr<space>).
+  -- `keys = "cr"` loads the plugin on the coercion prefix.
+  {
+    "tpope/vim-abolish",
+    cmd = { "Abolish", "Subvert", "S" },
+    keys = { { "cr", desc = "Coerce case" } },
+  },
+
   -- Highlight, list, and jump between TODO/FIXME/HACK/etc. comments.
   {
     "folke/todo-comments.nvim",
@@ -47,5 +56,16 @@ return {
         matchparen = { enabled = true },
       },
     },
+    config = function(_, opts)
+      require("blink.pairs").setup(opts)
+      vim.keymap.set("i", "<", function()
+        local line = vim.api.nvim_get_current_line()
+        local column = vim.api.nvim_win_get_cursor(0)[2] + 1
+        if line:sub(column, column) == ">" then
+          return "<"
+        end
+        return "<><Left>"
+      end, { expr = true, desc = "Insert matching chevrons" })
+    end,
   },
 }

@@ -1,23 +1,59 @@
 return {
-  "coder/claudecode.nvim",
-  dependencies = { "folke/snacks.nvim" },
-  -- Path to the Claude Code CLI. Not a secret; safe to commit.
-  opts = { terminal_cmd = "~/.local/bin/claude" },
-  config = true,
+  "folke/sidekick.nvim",
+  opts = {
+    -- Sidekick owns Copilot's Next Edit Suggestions now.
+    nes = { enabled = true },
+    cli = {
+      mux = {
+        enabled = false,
+      },
+      win = {
+        layout = "right",
+      },
+    },
+  },
   keys = {
-    { "<leader>ac", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude" },
-    { "<leader>af", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude" },
-    { "<leader>ar", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
-    { "<leader>aC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
-    { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
-    { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+    {
+      "<leader>aa",
+      function() require("sidekick.cli").toggle() end,
+      desc = "Toggle AI CLI",
+    },
     {
       "<leader>as",
-      "<cmd>ClaudeCodeTreeAdd<cr>",
-      desc = "Add file",
-      ft = { "NvimTree", "neo-tree", "oil", "minifiles", "netrw" },
+      function() require("sidekick.cli").select({ filter = { installed = true } }) end,
+      desc = "Select AI CLI",
     },
-    { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
-    { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+    {
+      "<leader>ac",
+      function() require("sidekick.cli").toggle({ name = "copilot", focus = true }) end,
+      desc = "Toggle Copilot CLI",
+    },
+    {
+      "<leader>ao",
+      function() require("sidekick.cli").toggle({ name = "opencode", focus = true }) end,
+      desc = "Toggle OpenCode",
+    },
+    {
+      "<leader>af",
+      function() require("sidekick.cli").send({ msg = "{file}" }) end,
+      desc = "Send file to AI CLI",
+    },
+    {
+      "<leader>av",
+      function() require("sidekick.cli").send({ msg = "{selection}" }) end,
+      mode = "x",
+      desc = "Send selection to AI CLI",
+    },
+    {
+      "<leader>ap",
+      function() require("sidekick.cli").prompt() end,
+      mode = { "n", "x" },
+      desc = "Select AI prompt",
+    },
+    {
+      "<leader>ad",
+      function() require("sidekick.cli").close() end,
+      desc = "Detach AI CLI",
+    },
   },
 }
