@@ -1,0 +1,43 @@
+#!/bin/sh
+# Adjust mouse and touchpad sensitivity on the fly.
+# Usage: mouse-sens +0.1 | -0.1 | <absolute value in -1.0..1.0>
+#        mouse-sens accel [flat|adaptive]   (no profile = toggle)
+
+# Current libinput setting, preferring the touchpad, then any mouse.
+current() {
+  swaymsg -t get_inputs | jq -r "
+    [.[] | select(.type == \"touchpad\")] + [.[] | select(.type == \"pointer\")]
+    | map(.libinput.$1 // empty) | .[0] // empty"
+}
+
+apply() {
+  swaymsg -q input type:touchpad "$@"
+  swaymsg -q input type:pointer "$@"
+}
+
+notify() {
+  notify-send -t 1000 -h string:x-dunst-stack-tag:mouse-sens "$1" "$2"
+}
+
+if [ "$1" = accel ]; then
+  profile="$2"
+  if [ -z "$profile" ]; then
+    [ "$(current accel_profile)" = flat ] && profile=adaptive || profile=flat
+  fi
+  apply accel_profile "$profile"
+  notify "Mouse acceleration" "$profile"
+  exit
+fi
+
+arg="${1:-0}"
+cur=$(current accel_speed)
+
+new=$(awk -v cur="${cur:-0}" -v arg="$arg" 'BEGIN {
+  v = (arg ~ /^[+-]/) ? cur + arg : arg
+  if (v > 1) v = 1
+  if (v < -1) v = -1
+  printf "%.2f", v
+}')
+
+apply pointer_accel "$new"
+notify "Mouse sensitivity" "$new"

@@ -62,10 +62,28 @@ input type:keyboard {
     xkb_layout ca
 }
 
+# Mouse/touchpad sensitivity: -1.0 (slowest) … 1.0 (fastest), 0 = default.
+# Profile: flat = no acceleration, adaptive = accelerated.
+set $mouse_sens  0.3
+set $mouse_accel adaptive
+
 input type:touchpad {
     tap enabled
     natural_scroll enabled
+    accel_profile $mouse_accel
+    pointer_accel $mouse_sens
 }
+
+input type:pointer {
+    accel_profile $mouse_accel
+    pointer_accel $mouse_sens
+}
+
+# Adjust sensitivity on the fly (resets to $mouse_sens on reload).
+bindsym $mod+Ctrl+equal exec ~/.config/sway/mouse-sens +0.1
+bindsym $mod+Ctrl+minus exec ~/.config/sway/mouse-sens -0.1
+bindsym $mod+Ctrl+0     exec ~/.config/sway/mouse-sens $mouse_sens
+bindsym $mod+Ctrl+a     exec ~/.config/sway/mouse-sens accel
 
 ### Autostart
 exec dbus-update-activation-environment --systemd XDG_SESSION_TYPE=wayland
