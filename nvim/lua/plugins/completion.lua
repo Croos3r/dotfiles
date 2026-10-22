@@ -11,8 +11,10 @@ return {
       ["<tab>"] = {
         "snippet_forward",
         function() return require("sidekick").nes_jump_or_apply() end,
+        "select_and_accept",
         "fallback",
       },
+      ["<S-Tab>"] = { "select_next", "fallback" },
       ["<c-y>"] = { "select_and_accept", "fallback" },
       ["<c-k>"] = { "select_prev", "fallback" },
       ["<up>"] = { "select_prev", "fallback" },
