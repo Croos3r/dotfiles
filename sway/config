@@ -96,7 +96,7 @@ exec nm-applet --indicator
 exec dex --autostart --environment sway
 
 # Lock after 10 min idle, blank after 15, and before suspend (was: xss-lock + i3lock-fancy).
-# blur-lock wraps swaylock with a blurred snapshot of each output.
+# blur-lock wraps swaylock-fprintd with a blurred snapshot of each output (password or fingerprint).
 # `loginctl lock-session` triggers the `lock` event below.
 exec swayidle -w \
     timeout 600 ~/.config/swaylock/blur-lock \

@@ -13,6 +13,8 @@ from PIL import Image, ImageEnhance, ImageFilter
 DOWNSCALE = 6    # blur a smaller copy: much faster and smoother than a huge radius
 RADIUS = 4
 BRIGHTNESS = 0.7
+# swaylock-fprintd fork, built in ~/projects/swaylock-fprintd; -p unlocks by fingerprint alongside the password prompt.
+SWAYLOCK = os.path.expanduser('~/.local/bin/swaylock-fprintd')
 
 
 def blurred_snapshots(tmpdir):
@@ -38,7 +40,8 @@ def blurred_snapshots(tmpdir):
 
 def main():
     # Already locked: a snapshot now would just capture the lock screen.
-    if subprocess.run(['pgrep', '-x', 'swaylock'], stdout=subprocess.DEVNULL).returncode == 0:
+    # The kernel truncates process names to 15 chars: swaylock-fprintd shows up as swaylock-fprint.
+    if subprocess.run(['pgrep', '-x', 'swaylock|swaylock-fprint'], stdout=subprocess.DEVNULL).returncode == 0:
         return 0
 
     tmpdir = tempfile.mkdtemp(prefix='blur-lock-', dir=os.environ.get('XDG_RUNTIME_DIR'))
@@ -48,12 +51,20 @@ def main():
         print(f'blur-lock: {e}, locking without blur', file=sys.stderr)
         images = []
 
-    # -f returns once the lock is in place, so swayidle's before-sleep still blocks suspend until locked.
-    result = subprocess.run(['swaylock', '-f', *images, *sys.argv[1:]])
+    # Not -f: forking after gdk-pixbuf has loaded the images breaks GLib's D-Bus in the child, so the
+    # fingerprint code hangs ~25s and then gives up. Instead leave swaylock running and return once
+    # --ready-fd reports the lock is in place, so swayidle's before-sleep still blocks suspend until locked.
+    ready_r, ready_w = os.pipe()
+    proc = subprocess.Popen([SWAYLOCK, '-p', '--ready-fd', str(ready_w), *images, *sys.argv[1:]],
+                            pass_fds=(ready_w,), start_new_session=True)
+    os.close(ready_w)
+    ready = os.read(ready_r, 1)  # empty if swaylock exits without locking
+    os.close(ready_r)
+    # swaylock has loaded the images by the time it locks.
     for f in os.listdir(tmpdir):
         os.remove(os.path.join(tmpdir, f))
     os.rmdir(tmpdir)
-    return result.returncode
+    return 0 if ready else proc.wait()
 
 
 if __name__ == '__main__':
