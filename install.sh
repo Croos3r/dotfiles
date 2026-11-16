@@ -25,7 +25,7 @@ PACKAGES=(
     playerctl brightnessctl alsa-utils
     python3-requests python3-pil curl unzip
     # shell + CLI tools (fish functions, lazygit, btop, ...)
-    fish starship bat btop lazygit gh git zoxide eza fzf fd-find ripgrep sl pyenv
+    fish starship bat btop lazygit gh git zoxide eza fzf fd-find ripgrep sl pyenv jq
     # neovim + the toolchains its language modules expect
     neovim tree-sitter-cli build-essential clang golang-go rustup php-cli composer
     # needed to build bluetui with cargo
@@ -48,6 +48,24 @@ link_configs() {
         ln -s "$src" "$dst"
         echo "linked $dst -> $src"
     done
+}
+
+# Claude Code status line. ~/.claude/settings.json holds secrets, so it is not
+# tracked: only the script is linked, and the statusLine key is merged in.
+link_claude() {
+    local src="$DOTFILES/claude/statusline.sh" dst="$HOME/.claude/statusline.sh"
+    local settings="$HOME/.claude/settings.json" tmp
+    mkdir -p "$HOME/.claude"
+    if [ "$(readlink "$dst" 2>/dev/null)" != "$src" ]; then
+        ln -sfn "$src" "$dst"
+        echo "linked $dst -> $src"
+    fi
+    command -v jq >/dev/null || { echo "jq missing, add statusLine to $settings by hand"; return; }
+    [ -f "$settings" ] || echo '{}' > "$settings"
+    tmp="$(mktemp)"
+    jq '.statusLine = {type: "command", command: "~/.claude/statusline.sh", padding: 0}' "$settings" > "$tmp"
+    cat "$tmp" > "$settings"
+    rm "$tmp"
 }
 
 install_packages() {
@@ -194,6 +212,7 @@ set_default_browser() {
 mkdir -p "$CONFIG"
 [ "${1:-}" = "--packages" ] && install_packages
 link_configs
+link_claude
 install_fonts
 install_zscroll
 install_rust_tools
