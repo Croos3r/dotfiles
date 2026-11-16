@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+"""Unlock the GNOME login keyring with the TPM-sealed password (used after fingerprint login).
+
+With no argument the password is decrypted from the sealed credential;
+with "-" it is read from stdin (for testing).
+"""
+import os
+import subprocess
+import sys
+
+from gi.repository import Gio, GLib
+
+CRED = os.path.expanduser("~/.config/keyring-unlock/login.cred")
+NAME = "org.freedesktop.secrets"
+SERVICE = "/org/freedesktop/secrets"
+COLLECTION = SERVICE + "/collection/login"
+
+if sys.argv[1:] == ["-"]:
+    password = sys.stdin.buffer.read()
+elif os.path.exists(CRED):
+    password = subprocess.run(
+        ["systemd-creds", "--user", "--name=keyring-login", "decrypt", CRED, "-"],
+        check=True, stdout=subprocess.PIPE,
+    ).stdout
+else:
+    sys.exit(0)
+
+bus = Gio.bus_get_sync(Gio.BusType.SESSION)
+
+
+def call(iface, method, args):
+    return bus.call_sync(NAME, SERVICE, iface, method, args, None,
+                         Gio.DBusCallFlags.NONE, -1, None)
+
+
+session = call("org.freedesktop.Secret.Service", "OpenSession",
+               GLib.Variant("(sv)", ("plain", GLib.Variant("s", "")))).unpack()[1]
+try:
+    call("org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface",
+         "UnlockWithMasterPassword",
+         GLib.Variant("(o(oayays))", (COLLECTION, (session, b"", password, "text/plain"))))
+except GLib.Error as e:
+    sys.exit(f"keyring unlock failed: {e.message}")

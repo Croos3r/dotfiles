@@ -1,0 +1,22 @@
+#!/bin/sh
+# Seal the keyring (login) password with the TPM, then test the automatic unlock.
+set -e
+CRED="$HOME/.config/keyring-unlock/login.cred"
+COL=/org/freedesktop/secrets/collection/login
+locked() { busctl --user get-property org.freedesktop.secrets $COL org.freedesktop.Secret.Collection Locked | cut -d' ' -f2; }
+umask 077
+systemd-ask-password -n "Keyring (login) password:" |
+  systemd-creds --user --with-key=host+tpm2 --name=keyring-login encrypt - "$CRED.new"
+mv "$CRED.new" "$CRED"
+echo "Sealed to $CRED. Testing: locking the keyring, then unlocking it from the TPM..."
+busctl --user call org.freedesktop.secrets /org/freedesktop/secrets org.freedesktop.Secret.Service Lock ao 1 $COL >/dev/null
+[ "$(locked)" = true ] || { echo "Could not lock the keyring to test; try logging out and in."; exit 1; }
+systemctl --user restart keyring-tpm-unlock.service || true
+sleep 1
+if [ "$(locked)" = false ]; then
+  echo "OK: keyring unlocked automatically."
+else
+  rm -f "$CRED"
+  echo "FAILED: keyring still locked (wrong password?). Sealed file removed; run this again."
+  exit 1
+fi

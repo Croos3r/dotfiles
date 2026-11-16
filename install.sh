@@ -23,7 +23,7 @@ PACKAGES=(
     grim slurp swappy wl-clipboard
     autotiling dex network-manager-gnome
     playerctl brightnessctl alsa-utils
-    python3-requests python3-pil curl unzip
+    python3-requests python3-pil python3-gi curl unzip
     # shell + CLI tools (fish functions, lazygit, btop, ...)
     fish starship bat btop lazygit gh git zoxide eza fzf fd-find ripgrep sl pyenv jq
     # neovim + the toolchains its language modules expect
@@ -66,6 +66,21 @@ link_claude() {
     jq '.statusLine = {type: "command", command: "~/.claude/statusline.sh", padding: 0}' "$settings" > "$tmp"
     cat "$tmp" > "$settings"
     rm "$tmp"
+}
+
+# Fingerprint login gives GDM no password, so the GNOME keyring stays locked.
+# These unlock it at login from a TPM-sealed copy of the password. The sealed
+# file is per machine and not tracked: run keyring-tpm-enroll once to create it.
+link_keyring() {
+    local f
+    mkdir -p "$HOME/.local/bin" "$CONFIG/keyring-unlock"
+    chmod 700 "$CONFIG/keyring-unlock"
+    for f in keyring-tpm-unlock keyring-tpm-enroll; do
+        ln -sfn "$DOTFILES/keyring/$f" "$HOME/.local/bin/$f"
+    done
+    # enabling by path also links the unit into ~/.config/systemd/user
+    systemctl --user enable "$DOTFILES/keyring/keyring-tpm-unlock.service"
+    [ -f "$CONFIG/keyring-unlock/login.cred" ] || echo "run keyring-tpm-enroll to seal the keyring password"
 }
 
 install_packages() {
@@ -213,6 +228,7 @@ mkdir -p "$CONFIG"
 [ "${1:-}" = "--packages" ] && install_packages
 link_configs
 link_claude
+link_keyring
 install_fonts
 install_zscroll
 install_rust_tools

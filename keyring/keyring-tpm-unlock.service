@@ -1,0 +1,12 @@
+[Unit]
+Description=Unlock GNOME login keyring with TPM-sealed password
+Wants=gnome-keyring-daemon.service
+After=gnome-keyring-daemon.service
+ConditionPathExists=%h/.config/keyring-unlock/login.cred
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/keyring-tpm-unlock
+
+[Install]
+WantedBy=default.target
