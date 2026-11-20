@@ -90,6 +90,8 @@ exec dbus-update-activation-environment --systemd XDG_SESSION_TYPE=wayland
 exec foot --server
 exec autotiling
 exec dunst
+# Low/critical battery and plug/unplug notifications (thresholds: /etc/UPower/UPower.conf).
+exec poweralertd -s
 exec nm-applet --indicator
 
 # Start XDG autostart .desktop files using dex.

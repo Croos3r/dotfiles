@@ -5,6 +5,7 @@
 @define-color primary        #89b4fa; /* blue */
 @define-color secondary      #94e2d5; /* teal */
 @define-color alert          #f38ba8; /* red */
+@define-color warning        #fab387; /* peach */
 @define-color disabled       #6c7086; /* overlay0 */
 
 * {
@@ -87,6 +88,11 @@ window#waybar {
   color: @disabled;
 }
 
+#battery.warning:not(.charging) {
+  color: @warning;
+}
+
 #battery.critical:not(.charging) {
-  color: @alert;
+  background: @alert;
+  color: @background;
 }

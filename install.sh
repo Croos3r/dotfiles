@@ -22,7 +22,7 @@ PACKAGES=(
     rofi rofimoji wtype dunst foot tmux flameshot
     grim slurp swappy wl-clipboard
     autotiling dex network-manager-gnome
-    playerctl brightnessctl alsa-utils
+    playerctl brightnessctl alsa-utils upower poweralertd
     python3-requests python3-pil python3-gi curl unzip
     # shell + CLI tools (fish functions, lazygit, btop, ...)
     fish starship bat btop lazygit gh git zoxide eza fzf fd-find ripgrep sl pyenv jq

@@ -45,7 +45,7 @@
     "bat": "BAT1",
     "adapter": "ACAD",
     "interval": 5,
-    "states": { "critical": 10 },
+    "states": { "warning": 20, "critical": 10 },
     "format": "{icon} {capacity}%",
     "format-charging": "󰂄 {capacity}%",
     "format-full": "Fully charged",
