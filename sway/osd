@@ -1,0 +1,60 @@
+#!/bin/sh
+# Change volume or screen brightness and show the new level in a notification.
+# Each kind reuses one notification (dunst stack tag), so holding a key
+# updates it in place instead of stacking new ones.
+# Usage: osd volume up|down|mute
+#        osd brightness up|down
+
+VOLUME_STEP=1310   # amixer raw units, ~2%
+BRIGHTNESS_STEP=5  # percent
+BRIGHTNESS_MIN=1   # percent, never fully black
+
+notify() { # tag summary percent icon
+  notify-send -a osd -t 1500 -i "$4" \
+    -h "string:x-dunst-stack-tag:$1" -h "int:value:$3" "$2" "$3%"
+}
+
+volume() {
+  case "$1" in
+    up)   amixer -q sset Master,0 "$VOLUME_STEP+" unmute ;;
+    down) amixer -q sset Master,0 "$VOLUME_STEP-" unmute ;;
+    mute) amixer -q sset Master,0 toggle ;;
+  esac
+  state=$(amixer sget Master,0)
+  pct=$(printf '%s\n' "$state" | grep -o '\[[0-9]*%\]' | head -1 | tr -d '[]%')
+  if printf '%s\n' "$state" | grep -q '\[off\]'; then
+    notify volume "Volume (muted)" "$pct" audio-volume-muted
+    return
+  fi
+  if   [ "$pct" -eq 0 ];  then icon=muted
+  elif [ "$pct" -lt 34 ]; then icon=low
+  elif [ "$pct" -lt 67 ]; then icon=medium
+  else                         icon=high
+  fi
+  notify volume "Volume" "$pct" "audio-volume-$icon"
+}
+
+brightness() {
+  dev=$(ls /sys/class/backlight | head -1)
+  dir=/sys/class/backlight/$dev
+  max=$(cat "$dir/max_brightness")
+  cur=$(cat "$dir/brightness")
+  # Work in whole percents so repeated presses land on clean steps
+  pct=$(( (cur * 100 + max / 2) / max ))
+  case "$1" in
+    up)   pct=$((pct + BRIGHTNESS_STEP)) ;;
+    down) pct=$((pct - BRIGHTNESS_STEP)) ;;
+  esac
+  [ "$pct" -gt 100 ] && pct=100
+  [ "$pct" -lt "$BRIGHTNESS_MIN" ] && pct=$BRIGHTNESS_MIN
+  # logind lets the active session set the backlight without the video group
+  busctl call org.freedesktop.login1 /org/freedesktop/login1/session/auto \
+    org.freedesktop.login1.Session SetBrightness ssu \
+    backlight "$dev" $((max * pct / 100))
+  notify brightness "Brightness" "$pct" display-brightness
+}
+
+case "$1" in
+  volume|brightness) "$@" ;;
+  *) echo "usage: osd volume up|down|mute | osd brightness up|down" >&2; exit 1 ;;
+esac

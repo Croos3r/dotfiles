@@ -79,6 +79,13 @@
     highlight = "#f38ba8"
     timeout = 0
 
+# Volume / brightness from ~/.config/sway/osd: compact, one line plus the
+# progress bar, and kept out of the history.
+[osd]
+    appname = osd
+    format = "<b>%s</b>  <span foreground='#bac2de'>%b</span>"
+    history_ignore = true
+
 # poweralertd: one notification per plug/unplug plus the low/critical
 # battery warnings. Hide the power supply online/offline events (sent once
 # per charger device: ACAD and the USB-C port) and the "Warning cleared"
