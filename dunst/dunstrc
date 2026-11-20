@@ -101,12 +101,13 @@
     frame_color = "#fab387"
     timeout = 0
 
-# poweralertd: keep only the low/critical battery warnings. Hide the
-# charging/discharging and power supply online/offline events (one per
-# device, so 3 per plug/unplug) and the "Warning cleared" follow-up.
-[poweralertd_status]
+# poweralertd: one notification per plug/unplug plus the low/critical
+# battery warnings. Hide the power supply online/offline events (sent once
+# per charger device: ACAD and the USB-C port) and the "Warning cleared"
+# follow-up; the battery's own charging/discharging event is kept.
+[poweralertd_line_power]
     appname = poweralertd
-    summary = "Power status:*"
+    summary = "Power status:*(line power)"
     skip_display = true
     history_ignore = true
 
