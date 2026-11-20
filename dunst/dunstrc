@@ -1,104 +1,82 @@
+# Catppuccin Mocha, matching waybar / rofi / foot.
+#   base #1e1e2e  surface0 #313244  surface1 #45475a  overlay0 #6c7086
+#   text #cdd6f4  subtext1 #bac2de  blue #89b4fa  lavender #b4befe
+#   peach #fab387  red #f38ba8  green #a6e3a1
+
 [global]
-    # Display notifications at top-center
+    ### Geometry
     origin = top-center
-    
-    # Offset from the origin (x, y)
-    offset = 0x30
-    
-    # Notification width - smaller for compact notifications
-    width = (300, 400)
-    
-    # Maximum height
-    height = 200
-    
-    # Notification padding
-    padding = 8
-    horizontal_padding = 10
-    
-    # Frame settings
+    offset = (0, 24)
+    width = (300, 420)
+    height = (0, 220)
+    # Space between stacked notifications (replaces the separator line)
+    gap_size = 8
+    notification_limit = 5
+
+    ### Box
+    padding = 12
+    horizontal_padding = 14
+    text_icon_padding = 14
     frame_width = 2
-    frame_color = "#89b4fa"
-    
-    # Separator settings
-    separator_height = 2
+    corner_radius = 12
+    # Wayland has no compositor transparency; use an alpha channel instead
+    background = "#1e1e2ef2"
     separator_color = frame
-    highlight = "#89b4fa"
-    
-    # Font
-    font = JetBrainsMono Nerd Font 10
-    
-    # Line height
-    line_height = 0
-    
-    # Markup
+
+    ### Progress bar (volume / brightness / downloads)
+    progress_bar = true
+    progress_bar_height = 8
+    progress_bar_frame_width = 0
+    progress_bar_corner_radius = 4
+    progress_bar_min_width = 150
+    progress_bar_max_width = 392
+
+    ### Text
+    font = JetBrainsMono Nerd Font 11
+    line_height = 2
     markup = full
-    
-    # Format of notifications
-    format = "<b>%s</b>\n%b"
-    
-    # Alignment of text
+    # Bold summary, softer body
+    format = "<b>%s</b>\n<span foreground='#bac2de'>%b</span>"
     alignment = left
     vertical_alignment = center
-    
-    # Show age if message is older than this time
     show_age_threshold = 60
-    
-    # Word wrap
     word_wrap = yes
-    
-    # Ignore newlines
+    ellipsize = end
     ignore_newline = no
-    
-    # Stack duplicate notifications
     stack_duplicates = true
     hide_duplicate_count = false
-    
-    # Display indicators for URLs and actions
     show_indicators = yes
-    
-    # Icon settings
+
+    ### Icons: use the desktop's Papirus-Dark theme (crisp, any size)
+    enable_recursive_icon_lookup = true
+    icon_theme = "Papirus-Dark"
     icon_position = left
     min_icon_size = 32
     max_icon_size = 48
-    
-    # Icon path
-    icon_path = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
-    
-    # Notification timeout (in seconds, 0 = never expire)
+    icon_corner_radius = 8
+
+    ### Behaviour
     timeout = 5
-    
-    # Mouse actions
     mouse_left_click = close_current
     mouse_middle_click = do_action, close_current
     mouse_right_click = close_all
-    
-    # Transparency (0-100)
-    transparency = 0
-    
-    # Corner radius
-    corner_radius = 8
-    
-    # Progress bar settings
-    progress_bar = true
-    progress_bar_height = 10
-    progress_bar_frame_width = 1
-    progress_bar_min_width = 150
-    progress_bar_max_width = 300
 
 [urgency_low]
-    background = "#1e1e2e"
     foreground = "#cdd6f4"
-    timeout = 5
+    frame_color = "#45475a"
+    highlight = "#6c7086"
+    timeout = 4
 
 [urgency_normal]
-    background = "#1e1e2e"
     foreground = "#cdd6f4"
+    frame_color = "#89b4fa"
+    highlight = "#89b4fa, #b4befe"
     timeout = 7
 
 [urgency_critical]
-    background = "#1e1e2e"
     foreground = "#cdd6f4"
-    frame_color = "#fab387"
+    frame_color = "#f38ba8"
+    highlight = "#f38ba8"
     timeout = 0
 
 # poweralertd: one notification per plug/unplug plus the low/critical
@@ -116,3 +94,31 @@
     body = "Warning cleared"
     skip_display = true
     history_ignore = true
+
+# poweralertd sends no icons; pick battery icons from the body text.
+[poweralertd_charging]
+    appname = poweralertd
+    body = "Battery charging*"
+    new_icon = battery-good-charging
+
+[poweralertd_discharging]
+    appname = poweralertd
+    body = "Battery discharging*"
+    new_icon = battery-good
+
+[poweralertd_full]
+    appname = poweralertd
+    body = "Battery fully charged*"
+    new_icon = battery-full-charged
+
+[poweralertd_low]
+    appname = poweralertd
+    body = "*power level low*"
+    new_icon = battery-low
+    frame_color = "#fab387"
+
+[poweralertd_critical]
+    appname = poweralertd
+    body = "*power level critical*"
+    new_icon = battery-caution
+    urgency = critical
