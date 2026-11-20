@@ -86,6 +86,11 @@
     format = "<b>%s</b>  <span foreground='#bac2de'>%b</span>"
     history_ignore = true
 
+# Media keys (osd media): track title + artist with album art, no history.
+[osd_media]
+    appname = osd-media
+    history_ignore = true
+
 # poweralertd: one notification per plug/unplug plus the low/critical
 # battery warnings. Hide the power supply online/offline events (sent once
 # per charger device: ACAD and the USB-C port) and the "Warning cleared"

@@ -112,7 +112,10 @@ exec swayidle -w \
 bindsym --locked XF86AudioRaiseVolume exec ~/.config/sway/osd volume up
 bindsym --locked XF86AudioLowerVolume exec ~/.config/sway/osd volume down
 bindsym --locked XF86AudioMute exec ~/.config/sway/osd volume mute
-bindsym XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioPlay exec ~/.config/sway/osd media play-pause
+bindsym --locked XF86AudioPause exec ~/.config/sway/osd media play-pause
+bindsym --locked XF86AudioNext exec ~/.config/sway/osd media next
+bindsym --locked XF86AudioPrev exec ~/.config/sway/osd media previous
 bindsym --locked XF86MonBrightnessUp exec ~/.config/sway/osd brightness up
 bindsym --locked XF86MonBrightnessDown exec ~/.config/sway/osd brightness down
 

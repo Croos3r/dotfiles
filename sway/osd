@@ -4,6 +4,7 @@
 # updates it in place instead of stacking new ones.
 # Usage: osd volume up|down|mute
 #        osd brightness up|down
+#        osd media play-pause|next|previous
 
 VOLUME_STEP=1310   # amixer raw units, ~2%
 BRIGHTNESS_STEP=5  # percent
@@ -54,7 +55,64 @@ brightness() {
   notify brightness "Brightness" "$pct" display-brightness
 }
 
+# Escape text for dunst's markup (titles often contain & < >)
+escape() {
+  printf '%s' "$1" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g'
+}
+
+# Album art as a local file: file:// URLs as-is, http(s) ones cached once.
+art() {
+  case "$1" in
+    file://*) path=${1#file://}; [ -f "$path" ] && echo "$path" ;;
+    http*://*)
+      cache=${XDG_CACHE_HOME:-$HOME/.cache}/osd-art
+      path=$cache/$(printf '%s' "$1" | md5sum | cut -c1-32)
+      if [ ! -s "$path" ]; then
+        mkdir -p "$cache"
+        curl -fsL --max-time 2 -o "$path" "$1" || rm -f "$path"
+      fi
+      [ -s "$path" ] && echo "$path" ;;
+  esac
+}
+
+media() {
+  if ! playerctl status >/dev/null 2>&1; then
+    notify-send -a osd-media -t 1500 -i media-playback-stop \
+      -h string:x-dunst-stack-tag:media "No media player"
+    return
+  fi
+  # The player updates asynchronously: wait (up to ~1s) for the change to land
+  # so the notification shows the new state / track, not the old one.
+  case "$1" in
+    play-pause) watch=status ;;
+    *)          watch=title ;;
+  esac
+  before=$(playerctl metadata --format "{{$watch}}" 2>/dev/null)
+  playerctl "$1"
+  i=0
+  while [ $i -lt 20 ]; do
+    [ "$(playerctl metadata --format "{{$watch}}" 2>/dev/null)" != "$before" ] && break
+    sleep 0.05; i=$((i + 1))
+  done
+
+  status=$(playerctl status 2>/dev/null)
+  # Keep long (stream) titles to about two lines
+  title=$(playerctl metadata --format '{{title}}' 2>/dev/null | sed -E 's/^(.{60}).+/\1…/')
+  artist=$(playerctl metadata --format '{{artist}}' 2>/dev/null)
+  player=$(playerctl metadata --format '{{playerName}}' 2>/dev/null)
+  case "$status" in
+    Playing) glyph="󰐊"; fallback=media-playback-start ;;
+    Paused)  glyph="󰏤"; fallback=media-playback-pause ;;
+    *)       glyph="󰓛"; fallback=media-playback-stop ;;
+  esac
+  icon=$(art "$(playerctl metadata mpris:artUrl 2>/dev/null)")
+  notify-send -a osd-media -t 2500 -i "${icon:-$fallback}" \
+    -h string:x-dunst-stack-tag:media \
+    "$glyph  $(escape "${title:-Unknown track}")" \
+    "$(escape "${artist:-$player}")"
+}
+
 case "$1" in
-  volume|brightness) "$@" ;;
-  *) echo "usage: osd volume up|down|mute | osd brightness up|down" >&2; exit 1 ;;
+  volume|brightness|media) "$@" ;;
+  *) echo "usage: osd volume up|down|mute | brightness up|down | media play-pause|next|previous" >&2; exit 1 ;;
 esac
