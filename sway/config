@@ -187,8 +187,9 @@ workspace $ws2 output eDP-1
 workspace $ws3 output HDMI-A-1 eDP-1
 workspace $ws4 output HDMI-A-1 eDP-1
 
-assign [class="^Brave-browser$"] workspace number $ws1
-assign [app_id="^brave-browser$"] workspace number $ws1
+# Picture-in-picture is excluded so it opens where you are, not on $ws1.
+assign [class="^Brave-browser$" title="^(?!Picture in picture$)"] workspace number $ws1
+assign [app_id="^brave-browser$" title="^(?!Picture in picture$)"] workspace number $ws1
 assign [class="^discord$"] workspace number $ws2
 assign [app_id="^discord$"] workspace number $ws2
 assign [class="^jetbrains-.+$"] workspace number $ws3
@@ -200,6 +201,29 @@ for_window [class="^Spotify$"] move container to workspace number $ws5
 for_window [app_id="^org.gnome.Calculator$"] floating enable, resize set 360 528, move position 1540 20
 for_window [class="^Matplotlib$"] floating enable, resize set 1200 800, move position 720 120
 for_window [app_id="^Matplotlib$"] floating enable, resize set 1200 800, move position 720 120
+
+### Floating rules
+# Sway already floats real dialogs (windows with a parent or a fixed size).
+# These are the ones that look like normal windows but shouldn't tile.
+
+# Picture-in-picture (Brave/Chromium and Firefox): small, on every workspace,
+# bottom-right corner inside the gaps.
+for_window [title="^Picture[ -]in[ -][Pp]icture$"] floating enable, sticky enable, \
+    resize set 480 270, move position 100 ppt 100 ppt, move left 484 px, move up 274 px
+
+# "<site> is sharing your screen / a window / a tab" bar: keep it out of the tiling.
+for_window [title=" is sharing (your screen|a window|a tab|a Chrome tab)\.?$"] floating enable, sticky enable
+
+# Brave extension windows (Bitwarden popout, MetaMask/Rabby/Phantom prompts, …)
+# have app_id brave-<32-letter extension id>-<profile>. Installed web apps
+# (PWAs) use the same pattern, so they'd float too.
+for_window [app_id="^brave-[a-p]{32}-"] floating enable
+for_window [class="^Brave-browser$" instance="^crx_[a-p]{32}$"] floating enable
+
+# Desktop portal dialogs (file pickers, screen share picker) and NetworkManager
+# (connection editor, Wi-Fi password prompts).
+for_window [app_id="^xdg-desktop-portal-(gtk|gnome)$"] floating enable
+for_window [app_id="^nm-(applet|connection-editor)$"] floating enable
 
 # Workspace keys are bound by keycode (the number row: 10 = 1 … 19 = 0) so they
 # land on the same physical keys whatever the layout (AZERTY &é"'(-è_çà, or ca).
