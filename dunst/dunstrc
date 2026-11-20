@@ -100,3 +100,18 @@
     foreground = "#cdd6f4"
     frame_color = "#fab387"
     timeout = 0
+
+# poweralertd: keep only the low/critical battery warnings. Hide the
+# charging/discharging and power supply online/offline events (one per
+# device, so 3 per plug/unplug) and the "Warning cleared" follow-up.
+[poweralertd_status]
+    appname = poweralertd
+    summary = "Power status:*"
+    skip_display = true
+    history_ignore = true
+
+[poweralertd_cleared]
+    appname = poweralertd
+    body = "Warning cleared"
+    skip_display = true
+    history_ignore = true
